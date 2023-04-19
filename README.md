@@ -1,6 +1,6 @@
 # Python client for Netlink interface
 
-A simple python module for connecting to a netlink.
+A simple python module for the kernel netlink interface.
 
 
 ## Installtion
@@ -11,12 +11,13 @@ pip install netlink
 `
 
 #### Installtion from source
+To install from source:
 
-`
-git clone https://github.com/BoazTene/netlink **Enter**
-cd netlink **Enter**
+```
+git clone https://github.com/BoazTene/netlink
+cd netlink
 python3 setup.py install
-`
+```
 
 
 * Make sure you have gcc installed + cython
