@@ -7,7 +7,7 @@ A simple python module for the kernel netlink interface.
 
 ##### Installtion via pip
 `
-pip install netlink
+pip install netlink-client
 `
 
 #### Installtion from source
@@ -36,7 +36,7 @@ netlink = NetLink(31) // 31 is the magic number
 netlink.send(b"Hello Netlink!")
 result = netlink.recv(1024) // number of bytes
 
-print(result.decode('utf8'))
+print(result.decode('utf8')) // prints result from kernel.
 
 netlink.close() // closes the connection
 ```
