@@ -3,14 +3,14 @@
 A simple python module for the kernel netlink interface.
 
 
-## Installtion
+## Installition
 
-##### Installtion via pip
+#### Installition via pip
 `
-pip install netlink
+pip install netlink-client
 `
 
-#### Installtion from source
+#### Installition from source
 To install from source:
 
 ```
@@ -27,7 +27,6 @@ python3 setup.py install
 
 The usage is pretty straight forward.
 
-Connencting to a netlink:
 ```
 from netlink import NetLink
 
@@ -41,4 +40,4 @@ print(result.decode('utf8'))
 netlink.close() // closes the connection
 ```
 
-
+netlink Copyright (C) 2023 Boaz Tene
