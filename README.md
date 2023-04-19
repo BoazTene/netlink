@@ -13,9 +13,14 @@ pip install netlink
 #### Installtion from source
 
 `
-git clone http://github.com/BoazTene/netlink
+git clone https://github.com/BoazTene/netlink
+`
+`
 cd netlink
+`
+`
 python3 setup.py install
+`
 `
 
 * Make sure you have gcc installed + cython
