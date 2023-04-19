@@ -6,7 +6,7 @@ setup(
             name="netlink",  # as it would be imported
                                # may include packages/namespaces separated by `.`
 
-            sources=["src/main.c", "src/netlink.c", "src/netlink_class.c"], # all sources are compiled into a single binary file
+            sources=["src/netlink_Boaz_Tene/main.c", "src/netlink_Boaz_Tene/netlink.c", "src/netlink_Boaz_Tene/netlink_class.c"], # all sources are compiled into a single binary file
         ),
     ]
 )
