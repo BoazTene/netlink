@@ -78,7 +78,7 @@ int send_nl(struct netlink *nl, const char *message, ssize_t size) {
   nlh->nlmsg_pid = getpid();
   nlh->nlmsg_flags = 0;
 
-  strncpy(NLMSG_DATA(nlh), message, size);
+  strcpy(NLMSG_DATA(nlh), message);
 
   iov.iov_base = (void *)nlh;
   iov.iov_len = nlh->nlmsg_len;
