@@ -35,7 +35,7 @@ netlink = NetLink(31) // 31 is the magic number
 netlink.send(b"Hello Netlink!")
 result = netlink.recv(1024) // number of bytes
 
-print(result.decode('utf8'))
+print(result.decode('utf8')) // prints result from kernel.
 
 netlink.close() // closes the connection
 ```

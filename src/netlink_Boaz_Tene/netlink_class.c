@@ -19,20 +19,21 @@
 #include "netlink_class.h"
 
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
-  const char *message;
+  Py_buffer buffer;
 
-  if (!PyArg_ParseTuple(args, "y", &message)) {
+  if (!PyArg_ParseTuple(args, "y*", &buffer)) {
     PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
     return NULL;
   }
 
-  send_nl(self->netlink, message, sizeof(message));
+  send_nl(self->netlink, (char *) buffer.buf, buffer.len);
+  PyBuffer_Release(buffer);
 
   Py_RETURN_NONE;
 }
 
 static PyObject *netlink_recv(NetLink *self, PyObject *args) {
-  ssize_t bytes;
+  int bytes;
 
   if (!PyArg_ParseTuple(args, "i", &bytes)) {
     PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
