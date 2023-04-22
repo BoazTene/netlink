@@ -27,7 +27,7 @@ static PyObject *netlink_send(NetLink *self, PyObject *args) {
   }
 
   send_nl(self->netlink, (char *) buffer.buf, buffer.len);
-  PyBuffer_Release(buffer);
+  PyBuffer_Release(&buffer);
 
   Py_RETURN_NONE;
 }
