@@ -16,25 +16,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <linux/netlink.h>
+#include <linux/genetlink.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 struct netlink {
-    int sock_fd;
+    char family_name[256];
+    int protocol;
+    struct nl_sock *sock;
     struct sockaddr_nl src_addr;
     struct sockaddr_nl dst_addr;
 };
 
-struct netlink * initialize_netlink(struct netlink *nl, int magic_number);
+struct netlink * initialize_netlink(struct netlink *nl, char* family_name);
 
 int connect_nl(struct netlink *nl);
 
-int send_nl(struct netlink *nl, const char *message, ssize_t size);
-
-void recv_nl(struct netlink *nl, char *buffer, ssize_t size);
+int do_nl(struct netlink *nl, const void *attributes, __u8 attribute_type, __u8 command,
+          ssize_t attr_size);
 
 void close_nl(struct netlink *nl);
 

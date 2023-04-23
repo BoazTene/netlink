@@ -1,0 +1,1 @@
+cmd_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/test.mod := { echo  /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o;  echo; } > /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/test.mod

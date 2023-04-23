@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "netlink.h"
+
 #include <errno.h>
 
 int create_socket();
@@ -26,106 +27,53 @@ int create_socket();
  * @param nl allocated buffer.
  * @param magic_number the magic protocol (same in kernel).
  */
-struct netlink *initialize_netlink(struct netlink *nl, int magic_number) {
-  nl->sock_fd = create_socket(magic_number);
+struct netlink *initialize_netlink(struct netlink *nl, char *family_name) {
+    nl->sock = (struct nl_sock *)nl_socket_alloc();
+    memcpy(nl->family_name, family_name, 256);
+    nl->protocol = genl_ctrl_resolve(nl->sock, family_name);
 
-  memset(&nl->src_addr, 0, sizeof(struct sockaddr_nl));
-  nl->src_addr.nl_family = AF_NETLINK;
-  nl->src_addr.nl_pid = getpid(); /* self pid */
+    memset(&nl->src_addr, 0, sizeof(struct sockaddr_nl));
+    nl->src_addr.nl_family = AF_NETLINK;
+    nl->src_addr.nl_pid = getpid(); /* self pid */
 
-  memset(&nl->dst_addr, 0, sizeof(struct sockaddr_nl));
-  nl->dst_addr.nl_family = AF_NETLINK;
-  nl->dst_addr.nl_pid = 0;    /* For Linux Kernel */
-  nl->dst_addr.nl_groups = 0; /* unicast */
+    memset(&nl->dst_addr, 0, sizeof(struct sockaddr_nl));
+    nl->dst_addr.nl_family = AF_NETLINK;
+    nl->dst_addr.nl_pid = 0;    /* For Linux Kernel */
+    nl->dst_addr.nl_groups = 0; /* unicast */
 
-  return nl;
+    return nl;
 }
 
-/**
- * Creates a new socket.
- *
- * @param magic_number the magic protocol
- */
-int create_socket(int magic_number) {
-  return socket(PF_NETLINK, SOCK_RAW, magic_number);
+int do_nl(struct netlink *nl, const void *attribute, uint8_t attribute_type,
+          uint8_t command, ssize_t attr_size) {
+    struct nl_msg *msg = (struct nl_msg *)nlmsg_alloc();
+    if (!msg) {
+        return -1;
+    }
+
+    nla_put_u8(msg, GENL_HDRLEN, command);
+    struct nlattr *attrs[4096];
+    int attrlen = 0;
+
+    attrlen += NLA_HDRLEN + attr_size;
+    attrs[attrlen++] = (struct nlattr *)GENL_HDRLEN;
+    nla_put_u8(msg, attrlen, attribute);
+
+    /* Set the netlink header */
+    nlmsg_set_proto(msg, nl->protocol);
+    nlmsg_set_flags(msg, NLM_F_REQUEST);
+    nlmsg_set_type(msg, NLMSG_DONE);
+    nlmsg_set_payload(msg, attrlen);
+
+    int res = nl_send_auto(nl->sock, msg);
+    
+    nlmsg_free(msg);
+
+    return res;
 }
 
-/**
- * Binds to the nl address.
- */
-int connect_nl(struct netlink *nl) {
-  int res =
-      bind(nl->sock_fd, (struct sockaddr *)&nl->src_addr, sizeof(nl->src_addr));
-  return res;
+
+void close_nl(struct netlink *nl) 
+{
+    nl_socket_free(nl->sock);
 }
-
-/**
- * Sends a message to tne netlink.
- *
- * @param message the message to send.
- * @return the number of bytes sent or -1 on error.
- */
-int send_nl(struct netlink *nl, const char *message, ssize_t size) {
-  if (nl->sock_fd < 0)
-    return -1;
-
-  struct nlmsghdr *nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(size));
-  struct iovec iov;
-  struct msghdr msg;
-
-  memset(nlh, 0, NLMSG_SPACE(size));
-  nlh->nlmsg_len = NLMSG_SPACE(size);
-  nlh->nlmsg_pid = getpid();
-  nlh->nlmsg_flags = 0;
-
-  strcpy(NLMSG_DATA(nlh), message);
-
-  iov.iov_base = (void *)nlh;
-  iov.iov_len = nlh->nlmsg_len;
-  memset(&msg, 0, sizeof(msg));
-  msg.msg_name = (void *)&nl->dst_addr;
-  msg.msg_namelen = sizeof(nl->dst_addr);
-  msg.msg_iov = &iov;
-  msg.msg_iovlen = 1;
-
-  int res = sendmsg(nl->sock_fd, &msg, 0);
-  free(nlh);
-
-  return res;
-}
-
-/**
- * Recieves a message from the netlink.
- *
- * @param buffer the data will be stored.
- * @param size the size of the buffer.
- */
-void recv_nl(struct netlink *nl, char *buffer, ssize_t size) {
-  struct nlmsghdr *nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(size));
-  struct iovec iov;
-  struct msghdr msg;
-
-  memset(nlh, 0, NLMSG_SPACE(size));
-  nlh->nlmsg_len = NLMSG_SPACE(size);
-  nlh->nlmsg_pid = getpid();
-  nlh->nlmsg_flags = 0;
-
-  iov.iov_base = (void *)nlh;
-  iov.iov_len = nlh->nlmsg_len;
-  memset(&msg, 0, sizeof(msg));
-  msg.msg_name = (void *)&nl->dst_addr;
-  msg.msg_namelen = sizeof(nl->dst_addr);
-  msg.msg_iov = &iov;
-  msg.msg_iovlen = 1;
-
-  recvmsg(nl->sock_fd, &msg, 0);
-
-  char *result = NLMSG_DATA(nlh);
-  strncpy(buffer, result, size);
-  free(nlh);
-}
-
-/**
- * Closes the netlink.
- */
-void close_nl(struct netlink *nl) { close(nl->sock_fd); }

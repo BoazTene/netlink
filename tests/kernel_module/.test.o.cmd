@@ -1,0 +1,1 @@
+cmd_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/test.o := ld -m elf_x86_64 -z noexecstack   -r -o /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/test.o /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o

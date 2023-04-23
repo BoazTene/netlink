@@ -24,7 +24,7 @@
  */
 typedef struct {
     PyObject_HEAD
-    int  magic_number;
+    char family_name[256];
     struct netlink *netlink;
 } NetLink; 
 

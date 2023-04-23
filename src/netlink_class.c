@@ -15,82 +15,66 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <Python.h>
 #include "netlink_class.h"
 
-static PyObject *netlink_send(NetLink *self, PyObject *args) {
-  Py_buffer buffer;
+#include <Python.h>
 
-  if (!PyArg_ParseTuple(args, "y*", &buffer)) {
-    PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
-    return NULL;
-  }
+static PyObject *netlink_do(NetLink *self, PyObject *args) {
+    Py_buffer attr;
+    int command;
+    int attr_type;
 
-  send_nl(self->netlink, (char *) buffer.buf, buffer.len);
-  PyBuffer_Release(buffer);
+    if (!PyArg_ParseTuple(args, "iiy*", &attr_type, &command, &attr)) {
+        PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
+        return NULL;
+    }
 
-  Py_RETURN_NONE;
-}
+    do_nl(self->netlink, (char *)attr.buf, attr_type, command, attr.len);
+    PyBuffer_Release(&attr);
 
-static PyObject *netlink_recv(NetLink *self, PyObject *args) {
-  int bytes;
-
-  if (!PyArg_ParseTuple(args, "i", &bytes)) {
-    PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
-    return NULL;
-  }
-
-  char *buf = (char *)PyMem_Malloc(bytes);
-
-  recv_nl(self->netlink, buf, bytes);
-
-  PyObject *res = PyBytes_FromString(buf);
-
-  PyMem_Del(buf);
-
-  return res;
+    Py_RETURN_NONE;
 }
 
 static PyObject *netlink_close(NetLink *self, PyObject *args) {
-  if (self->netlink != NULL) {
-    close_nl(self->netlink);
-    Py_RETURN_NONE;
-  }
+    if (self->netlink != NULL) {
+        close_nl(self->netlink);
+        Py_RETURN_NONE;
+    }
 
-  return NULL;
+    return NULL;
 }
 
 static PyObject *NetLink_new(PyTypeObject *type, PyObject *args,
                              PyObject *kwds) {
-  NetLink *self;
+    NetLink *self;
 
-  self = (NetLink *)type->tp_alloc(type, 0);
+    self = (NetLink *)type->tp_alloc(type, 0);
 
-  return (PyObject *)self;
+    return (PyObject *)self;
 }
 
 static void NetLink_dealloc(NetLink *self) {
-  if (self->netlink != NULL) {
-    free(self->netlink);
-  }
+    if (self->netlink != NULL) {
+        close_nl(self->netlink);
+        free(self->netlink);
+    }
 
-  Py_TYPE(self)->tp_free((PyObject *)self);
+    Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
-  if (!PyArg_ParseTuple(args, "i", &self->magic_number))
-    return;
+    if (!PyArg_ParseTuple(args, "s", &self->family_name)) return;
 
-  self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
+    self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
 
-  self->netlink = initialize_netlink(self->netlink, self->magic_number);
+    self->netlink = initialize_netlink(self->netlink, self->family_name);
 
-  if (self->netlink->sock_fd < 0) {
-    PyErr_SetString(PyExc_ConnectionRefusedError,
-                    "Couldn't connect to netlink.");
-  }
+    if (!self->netlink->sock) {
+        PyErr_SetString(PyExc_ConnectionRefusedError,
+                        "Couldn't connect to netlink.");
+    }
 
-  connect_nl(self->netlink);
+    connect_nl(self->netlink);
 }
 
 static PyMemberDef NetLink_members[] = {
@@ -99,12 +83,7 @@ static PyMemberDef NetLink_members[] = {
 };
 
 static PyMethodDef NetLink_methods[] = {
-    {"send", (PyCFunction)netlink_send, METH_VARARGS,
-     "Sends a message.\n@param message The message to send (bytes)."},
-    {"recv", (PyCFunction)netlink_recv, METH_VARARGS,
-     "recv a message (Will wait until arrival).\n@param max_bytes the max "
-     "number of bytes to receive.\nNote that the number of bytes is EOF or "
-     "max_bytes."},
+    {"do", netlink_do, METH_VARARGS, "Do method"},
     {"close", (PyCFunction)netlink_close, METH_VARARGS,
      "closes the connection."},
     {NULL} /* Sentinel */
