@@ -73,19 +73,13 @@ nl_echo_init(void) {
     printk(KERN_INFO "Initializing Netlink Echo module\n");
 
     rc = genl_register_family(&nl_echo_family);
+    printk("Error code: %d\n",  rc);
     if (rc < 0) {
         printk(KERN_ERR "Failed to register netlink family: %d\n", rc);
         return rc;
     }
 
-    rc = genl_register_family(&nl_echo_family);
-    if (rc < 0) {
-        printk(KERN_ERR "Failed to register netlink ops: %d\n", rc);
-        genl_unregister_family(&nl_echo_family);
-        return rc;
-    }
-
-    return 0;
+     return 0;
 }
 
 static void __exit nl_echo_exit(void) {

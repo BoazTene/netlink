@@ -1,6 +1,6 @@
-obj-m += test.o
+obj-m += test_k.o
 
-test-objs := main.o
+test_k-objs := main.o
 
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)

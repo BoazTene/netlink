@@ -15,8 +15,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <linux/netlink.h>
-#include <linux/genetlink.h>
+#include <netlink/netlink.h>
+#include <netlink/genl/genl.h>
+#include <netlink/msg.h>
+#include <netlink/socket.h>
+#include <netlink/genl/genl.h>
+#include <netlink/genl/ctrl.h>
+#include <netlink/route/addr.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -26,15 +31,13 @@
 
 struct netlink {
     char family_name[256];
-    int protocol;
+    unsigned int protocol;
     struct nl_sock *sock;
     struct sockaddr_nl src_addr;
     struct sockaddr_nl dst_addr;
 };
 
 struct netlink * initialize_netlink(struct netlink *nl, char* family_name);
-
-int connect_nl(struct netlink *nl);
 
 int do_nl(struct netlink *nl, const void *attributes, __u8 attribute_type, __u8 command,
           ssize_t attr_size);

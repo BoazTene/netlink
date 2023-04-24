@@ -41,6 +41,7 @@ PyMODINIT_FUNC PyInit_netlink(void) {
 
   Py_INCREF(&NetLinkType);
   PyModule_AddObject(module, "NetLink", (PyObject *)&NetLinkType);
+
   return module;
 }
 

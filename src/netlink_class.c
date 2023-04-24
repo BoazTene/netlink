@@ -63,7 +63,14 @@ static void NetLink_dealloc(NetLink *self) {
 }
 
 static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
-    if (!PyArg_ParseTuple(args, "s", &self->family_name)) return;
+    Py_buffer family_name;
+    if (!PyArg_ParseTuple(args, "y*", &family_name)) return;
+    strcpy(self->family_name, family_name.buf);
+    PyBuffer_Release(&family_name);
+
+    printf("meow meow meow\n");
+
+    printf("family_name: %s\n", self->family_name);
 
     self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
 
@@ -73,8 +80,6 @@ static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
         PyErr_SetString(PyExc_ConnectionRefusedError,
                         "Couldn't connect to netlink.");
     }
-
-    connect_nl(self->netlink);
 }
 
 static PyMemberDef NetLink_members[] = {

@@ -1,8 +1,8 @@
-cmd_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o := gcc -Wp,-MMD,/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/.main.o.d -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -DCONFIG_X86_X32_ABI -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -Wframe-larger-than=1024 -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-stack-clash-protection -g -gdwarf-5 -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-stringop-truncation -Wno-zero-length-bounds -Wno-array-bounds -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -fsanitize=bounds -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"main"' -DKBUILD_MODNAME='"test"' -D__KBUILD_MODNAME=kmod_test -c -o /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.c
+cmd_/home/boaz/netlink/tests/kernel_module/main.o := gcc -Wp,-MMD,/home/boaz/netlink/tests/kernel_module/.main.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -Wframe-larger-than=1024 -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-stack-clash-protection -fzero-call-used-regs=used-gpr -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned -g -gdwarf-5  -fsanitize=bounds -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"main"' -DKBUILD_MODNAME='"test_k"' -D__KBUILD_MODNAME=kmod_test_k -c -o /home/boaz/netlink/tests/kernel_module/main.o /home/boaz/netlink/tests/kernel_module/main.c   ; ./tools/objtool/objtool  --hacks=jump_label  --hacks=noinstr     --retpoline  --rethunk  --sls  --stackval  --static-call  --uaccess   --module  /home/boaz/netlink/tests/kernel_module/main.o
 
-source_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o := /home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.c
+source_/home/boaz/netlink/tests/kernel_module/main.o := /home/boaz/netlink/tests/kernel_module/main.c
 
-deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o := \
+deps_/home/boaz/netlink/tests/kernel_module/main.o := \
   include/linux/compiler-version.h \
     $(wildcard include/config/CC_VERSION_TEXT) \
   include/linux/kconfig.h \
@@ -10,12 +10,15 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/BOOGER) \
     $(wildcard include/config/FOO) \
   include/linux/compiler_types.h \
+    $(wildcard include/config/DEBUG_INFO_BTF) \
+    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
     $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
     $(wildcard include/config/CC_HAS_ASM_INLINE) \
   include/linux/compiler_attributes.h \
   include/linux/compiler-gcc.h \
     $(wildcard include/config/RETPOLINE) \
     $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
+    $(wildcard include/config/SHADOW_CALL_STACK) \
     $(wildcard include/config/KCOV) \
   include/net/genetlink.h \
   include/linux/genetlink.h \
@@ -58,10 +61,11 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
     $(wildcard include/config/NET_SOCK_MSG) \
     $(wildcard include/config/SKB_EXTENSIONS) \
+    $(wildcard include/config/NET_CLS_ACT) \
     $(wildcard include/config/IPV6_NDISC_NODETYPE) \
     $(wildcard include/config/NET_SWITCHDEV) \
-    $(wildcard include/config/NET_CLS_ACT) \
     $(wildcard include/config/NET_REDIRECT) \
+    $(wildcard include/config/NETFILTER_SKIP_EGRESS) \
     $(wildcard include/config/TLS_DEVICE) \
     $(wildcard include/config/NET_SCHED) \
     $(wildcard include/config/NET_RX_BUSY_POLL) \
@@ -74,12 +78,15 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/NETWORK_PHY_TIMESTAMPING) \
     $(wildcard include/config/XFRM) \
     $(wildcard include/config/MPTCP) \
+    $(wildcard include/config/MCTP_FLOWS) \
     $(wildcard include/config/NETFILTER_XT_TARGET_TRACE) \
     $(wildcard include/config/NF_TABLES) \
     $(wildcard include/config/IP_VS) \
   include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY) \
+    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
     $(wildcard include/config/PREEMPT_DYNAMIC) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
     $(wildcard include/config/PREEMPT_) \
     $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
     $(wildcard include/config/SMP) \
@@ -100,14 +107,13 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/stringify.h \
   include/linux/export.h \
     $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
     $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
     $(wildcard include/config/MODULES) \
     $(wildcard include/config/TRIM_UNUSED_KSYMS) \
   include/linux/compiler.h \
     $(wildcard include/config/TRACE_BRANCH_PROFILING) \
     $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
+    $(wildcard include/config/OBJTOOL) \
     $(wildcard include/config/CFI_CLANG) \
   arch/x86/include/generated/asm/rwonce.h \
   include/asm-generic/rwonce.h \
@@ -116,16 +122,24 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/KASAN_SW_TAGS) \
   include/linux/kcsan-checks.h \
     $(wildcard include/config/KCSAN) \
+    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
     $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
   arch/x86/include/asm/linkage.h \
     $(wildcard include/config/X86_64) \
     $(wildcard include/config/X86_ALIGNMENT_16) \
     $(wildcard include/config/RETHUNK) \
     $(wildcard include/config/SLS) \
+  arch/x86/include/asm/ibt.h \
+    $(wildcard include/config/X86_KERNEL_IBT) \
+  include/linux/container_of.h \
+  include/linux/build_bug.h \
+  include/linux/err.h \
+  arch/x86/include/generated/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
   include/linux/bitops.h \
   include/linux/bits.h \
   include/vdso/bits.h \
-  include/linux/build_bug.h \
   include/linux/typecheck.h \
   include/uapi/linux/kernel.h \
   include/uapi/linux/sysinfo.h \
@@ -140,8 +154,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/asm/barrier.h \
   arch/x86/include/asm/nops.h \
   include/asm-generic/barrier.h \
-  include/asm-generic/bitops/find.h \
-    $(wildcard include/config/GENERIC_FIND_FIRST_BIT) \
   include/asm-generic/bitops/sched.h \
   arch/x86/include/asm/arch_hweight.h \
   arch/x86/include/asm/cpufeatures.h \
@@ -150,18 +162,18 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/MATH_EMULATION) \
     $(wildcard include/config/X86_PAE) \
     $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_USE_3DNOW) \
     $(wildcard include/config/X86_P6_NOP) \
     $(wildcard include/config/MATOM) \
     $(wildcard include/config/PARAVIRT_XXL) \
   arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
     $(wildcard include/config/X86_UMIP) \
     $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
     $(wildcard include/config/X86_5LEVEL) \
     $(wildcard include/config/PAGE_TABLE_ISOLATION) \
     $(wildcard include/config/CPU_UNRET_ENTRY) \
+    $(wildcard include/config/INTEL_IOMMU_SVM) \
     $(wildcard include/config/X86_SGX) \
+    $(wildcard include/config/INTEL_TDX_GUEST) \
   include/asm-generic/bitops/const_hweight.h \
   include/asm-generic/bitops/instrumented-atomic.h \
   include/linux/instrumented.h \
@@ -201,44 +213,42 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/STRICT_MODULE_RWX) \
     $(wildcard include/config/LTO_CLANG) \
   include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
   include/linux/ratelimit_types.h \
   include/uapi/linux/param.h \
   arch/x86/include/generated/uapi/asm/param.h \
   include/asm-generic/param.h \
     $(wildcard include/config/HZ) \
   include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
   include/linux/spinlock_types_raw.h \
     $(wildcard include/config/DEBUG_SPINLOCK) \
+    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
   arch/x86/include/asm/spinlock_types.h \
   include/asm-generic/qspinlock_types.h \
     $(wildcard include/config/NR_CPUS) \
   include/asm-generic/qrwlock_types.h \
   include/linux/lockdep_types.h \
     $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/PREEMPT_LOCK) \
     $(wildcard include/config/LOCKDEP) \
     $(wildcard include/config/LOCK_STAT) \
-  include/linux/rwlock_types.h \
   include/linux/once_lite.h \
   include/linux/dynamic_debug.h \
     $(wildcard include/config/JUMP_LABEL) \
   include/linux/jump_label.h \
     $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
   arch/x86/include/asm/jump_label.h \
+    $(wildcard include/config/HAVE_JUMP_LABEL_HACK) \
   include/linux/static_call_types.h \
     $(wildcard include/config/HAVE_STATIC_CALL) \
     $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
+  include/linux/instruction_pointer.h \
   include/linux/time.h \
     $(wildcard include/config/POSIX_TIMERS) \
+  include/linux/cache.h \
+    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
+  arch/x86/include/asm/cache.h \
+    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
+    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
+    $(wildcard include/config/X86_VSMP) \
   include/linux/math64.h \
     $(wildcard include/config/ARCH_SUPPORTS_INT128) \
   include/vdso/math64.h \
@@ -303,6 +313,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/uapi/asm/ptrace-abi.h \
   arch/x86/include/asm/paravirt_types.h \
     $(wildcard include/config/PGTABLE_LEVELS) \
+    $(wildcard include/config/ZERO_CALL_USED_REGS) \
     $(wildcard include/config/PARAVIRT_DEBUG) \
   arch/x86/include/asm/desc_defs.h \
   arch/x86/include/asm/pgtable_types.h \
@@ -318,6 +329,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/CPU_IBPB_ENTRY) \
   include/linux/static_key.h \
   include/linux/objtool.h \
+    $(wildcard include/config/FRAME_POINTER) \
   arch/x86/include/asm/msr-index.h \
   arch/x86/include/asm/unwind_hints.h \
   arch/x86/include/asm/orc_types.h \
@@ -347,15 +359,13 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/asm-generic/getorder.h \
   arch/x86/include/asm/msr.h \
   arch/x86/include/asm/msr-index.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
   arch/x86/include/asm/cpumask.h \
   include/linux/cpumask.h \
     $(wildcard include/config/CPUMASK_OFFSTACK) \
     $(wildcard include/config/HOTPLUG_CPU) \
     $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
   include/linux/bitmap.h \
+  include/linux/find.h \
   include/linux/string.h \
     $(wildcard include/config/BINARY_PRINTF) \
     $(wildcard include/config/FORTIFY_SOURCE) \
@@ -381,18 +391,20 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/asm/bug.h \
     $(wildcard include/config/DEBUG_BUGVERBOSE) \
   include/linux/instrumentation.h \
+    $(wildcard include/config/NOINSTR_VALIDATION) \
   include/asm-generic/bug.h \
     $(wildcard include/config/BUG) \
     $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
   arch/x86/include/uapi/asm/msr.h \
+  arch/x86/include/asm/shared/msr.h \
   include/linux/tracepoint-defs.h \
   arch/x86/include/asm/paravirt.h \
     $(wildcard include/config/PARAVIRT_SPINLOCKS) \
   arch/x86/include/asm/frame.h \
-    $(wildcard include/config/FRAME_POINTER) \
   arch/x86/include/asm/special_insns.h \
   include/linux/irqflags.h \
     $(wildcard include/config/TRACE_IRQFLAGS) \
+    $(wildcard include/config/PREEMPT_RT) \
     $(wildcard include/config/IRQSOFF_TRACER) \
     $(wildcard include/config/PREEMPT_TRACER) \
     $(wildcard include/config/DEBUG_IRQFLAGS) \
@@ -403,7 +415,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/asm/vdso/processor.h \
   include/linux/personality.h \
   include/uapi/linux/personality.h \
-  include/linux/err.h \
   arch/x86/include/asm/tsc.h \
   arch/x86/include/asm/cpufeature.h \
     $(wildcard include/config/X86_FEATURE_NAMES) \
@@ -411,7 +422,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/vdso/time.h \
   include/linux/bvec.h \
   include/linux/highmem.h \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
   include/linux/fs.h \
     $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
     $(wildcard include/config/FS_POSIX_ACL) \
@@ -427,7 +437,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/UNICODE) \
     $(wildcard include/config/COMPAT) \
     $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/BLK_DEV_LOOP) \
     $(wildcard include/config/FS_DAX) \
     $(wildcard include/config/BLOCK) \
     $(wildcard include/config/MIGRATION) \
@@ -464,6 +473,8 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/generated/asm/mmiowb.h \
   include/asm-generic/mmiowb.h \
     $(wildcard include/config/MMIOWB) \
+  include/linux/spinlock_types.h \
+  include/linux/rwlock_types.h \
   arch/x86/include/asm/spinlock.h \
   arch/x86/include/asm/qspinlock.h \
   include/asm-generic/qspinlock.h \
@@ -511,6 +522,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/rcupdate.h \
     $(wildcard include/config/PREEMPT_RCU) \
     $(wildcard include/config/TINY_RCU) \
+    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
     $(wildcard include/config/TASKS_RCU_GENERIC) \
     $(wildcard include/config/RCU_STALL_COMMON) \
     $(wildcard include/config/NO_HZ_FULL) \
@@ -532,11 +544,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/DEBUG_MUTEXES) \
   include/linux/osq_lock.h \
   include/linux/debug_locks.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/rbtree_types.h \
   include/linux/lockref.h \
     $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
   include/generated/bounds.h \
@@ -554,30 +561,29 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/NUMA) \
   include/linux/numa.h \
     $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
   include/linux/shrinker.h \
     $(wildcard include/config/MEMCG) \
-  include/linux/radix-tree.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
   include/linux/xarray.h \
     $(wildcard include/config/XARRAY_MULTI) \
   include/linux/gfp.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
     $(wildcard include/config/ZONE_DMA) \
     $(wildcard include/config/ZONE_DMA32) \
     $(wildcard include/config/ZONE_DEVICE) \
     $(wildcard include/config/PM_SLEEP) \
     $(wildcard include/config/CONTIG_ALLOC) \
     $(wildcard include/config/CMA) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
   include/linux/mmzone.h \
     $(wildcard include/config/FORCE_MAX_ZONEORDER) \
     $(wildcard include/config/MEMORY_ISOLATION) \
     $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
     $(wildcard include/config/SWAP) \
+    $(wildcard include/config/NUMA_BALANCING) \
+    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
     $(wildcard include/config/MEMORY_HOTPLUG) \
     $(wildcard include/config/COMPACTION) \
     $(wildcard include/config/PAGE_EXTENSION) \
@@ -589,8 +595,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/HUGETLB_PAGE) \
     $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
   include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/NUMA_BALANCING) \
   include/linux/mm_types.h \
     $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
     $(wildcard include/config/USERFAULTFD) \
@@ -599,7 +603,8 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/AIO) \
     $(wildcard include/config/MMU_NOTIFIER) \
     $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SUPPORT) \
+    $(wildcard include/config/IOMMU_SVA) \
+    $(wildcard include/config/KSM) \
   include/linux/mm_types_task.h \
     $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
     $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
@@ -607,7 +612,10 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/auxvec.h \
   include/uapi/linux/auxvec.h \
   arch/x86/include/uapi/asm/auxvec.h \
+  include/linux/kref.h \
+  include/linux/refcount.h \
   include/linux/rbtree.h \
+  include/linux/rbtree_types.h \
   include/linux/rwsem.h \
     $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
     $(wildcard include/config/DEBUG_RWSEMS) \
@@ -628,7 +636,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/WQ_WATCHDOG) \
   include/linux/timer.h \
     $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
   include/linux/ktime.h \
   include/linux/jiffies.h \
   include/vdso/jiffies.h \
@@ -651,24 +658,28 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
     $(wildcard include/config/MEMORY_FAILURE) \
     $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/KSM) \
+    $(wildcard include/config/HUGETLB_PAGE_OPTIMIZE_VMEMMAP) \
+    $(wildcard include/config/HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON) \
   include/linux/local_lock.h \
   include/linux/local_lock_internal.h \
   include/linux/memory_hotplug.h \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
     $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
+    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
     $(wildcard include/config/MEMORY_HOTREMOVE) \
+    $(wildcard include/config/MHP_MEMMAP_ON_MEMORY) \
   arch/x86/include/asm/mmzone.h \
   arch/x86/include/asm/mmzone_64.h \
   include/linux/topology.h \
     $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
     $(wildcard include/config/SCHED_SMT) \
   include/linux/arch_topology.h \
+    $(wildcard include/config/ACPI_CPPC_LIB) \
     $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
+  include/linux/percpu.h \
+    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
+    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
   arch/x86/include/asm/topology.h \
     $(wildcard include/config/SCHED_MC_PRIO) \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
   arch/x86/include/asm/mpspec.h \
     $(wildcard include/config/EISA) \
     $(wildcard include/config/X86_MPPARSE) \
@@ -677,8 +688,8 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/asm/apicdef.h \
   include/asm-generic/topology.h \
   include/linux/kconfig.h \
+  include/linux/radix-tree.h \
   include/linux/pid.h \
-  include/linux/refcount.h \
   include/linux/semaphore.h \
   include/linux/fcntl.h \
     $(wildcard include/config/ARCH_32BIT_OFF_T) \
@@ -709,13 +720,13 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
     $(wildcard include/config/SCHED_INFO) \
     $(wildcard include/config/SCHEDSTATS) \
+    $(wildcard include/config/SCHED_CORE) \
     $(wildcard include/config/FAIR_GROUP_SCHED) \
     $(wildcard include/config/RT_GROUP_SCHED) \
     $(wildcard include/config/RT_MUTEXES) \
     $(wildcard include/config/UCLAMP_TASK) \
     $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
     $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/SCHED_CORE) \
     $(wildcard include/config/CGROUP_SCHED) \
     $(wildcard include/config/BLK_DEV_IO_TRACE) \
     $(wildcard include/config/PSI) \
@@ -724,6 +735,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/BLK_CGROUP) \
     $(wildcard include/config/PAGE_OWNER) \
     $(wildcard include/config/EVENTFD) \
+    $(wildcard include/config/CPU_SUP_INTEL) \
     $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
     $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
     $(wildcard include/config/POSIX_CPUTIMERS) \
@@ -753,8 +765,11 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
     $(wildcard include/config/X86_MCE) \
     $(wildcard include/config/KRETPROBES) \
+    $(wildcard include/config/RETHOOK) \
     $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
     $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
+    $(wildcard include/config/PREEMPT_NONE) \
+    $(wildcard include/config/PREEMPT_VOLUNTARY) \
     $(wildcard include/config/DEBUG_RSEQ) \
   include/uapi/linux/sched.h \
   include/linux/sem.h \
@@ -809,7 +824,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/posix-timers.h \
   include/linux/alarmtimer.h \
     $(wildcard include/config/RTC_CLASS) \
-  include/linux/task_work.h \
   include/uapi/linux/rseq.h \
   include/linux/kcsan.h \
   arch/x86/include/generated/asm/kmap_size.h \
@@ -821,18 +835,19 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
     $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
   include/linux/uaccess.h \
-    $(wildcard include/config/SET_FS) \
+    $(wildcard include/config/ARCH_HAS_SUBPAGE_FAULTS) \
   include/linux/fault-inject-usercopy.h \
     $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
   arch/x86/include/asm/uaccess.h \
     $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_ASM_GOTO_OUTPUT) \
     $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
     $(wildcard include/config/ARCH_HAS_COPY_MC) \
     $(wildcard include/config/X86_INTEL_USERCOPY) \
   arch/x86/include/asm/smap.h \
   arch/x86/include/asm/extable.h \
     $(wildcard include/config/BPF_JIT) \
+  include/asm-generic/access_ok.h \
+    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
   arch/x86/include/asm/uaccess_64.h \
   include/linux/cred.h \
     $(wildcard include/config/DEBUG_CREDENTIALS) \
@@ -845,6 +860,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/assoc_array.h \
     $(wildcard include/config/ASSOCIATIVE_ARRAY) \
   include/linux/sched/user.h \
+    $(wildcard include/config/VFIO_PCI_ZDEV_KVM) \
     $(wildcard include/config/WATCH_QUEUE) \
   include/linux/percpu_counter.h \
   include/linux/ratelimit.h \
@@ -856,10 +872,24 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/ioprio.h \
   include/linux/sched/rt.h \
   include/linux/iocontext.h \
+    $(wildcard include/config/BLK_ICQ) \
   include/uapi/linux/ioprio.h \
   include/linux/fs_types.h \
   include/linux/mount.h \
   include/linux/mnt_idmapping.h \
+  include/linux/slab.h \
+    $(wildcard include/config/DEBUG_SLAB) \
+    $(wildcard include/config/FAILSLAB) \
+    $(wildcard include/config/SLAB) \
+    $(wildcard include/config/SLUB) \
+    $(wildcard include/config/SLOB) \
+  include/linux/overflow.h \
+  include/linux/percpu-refcount.h \
+  include/linux/kasan.h \
+    $(wildcard include/config/KASAN_STACK) \
+    $(wildcard include/config/KASAN_VMALLOC) \
+    $(wildcard include/config/KASAN_INLINE) \
+  include/linux/kasan-enabled.h \
   include/uapi/linux/fs.h \
   include/linux/quota.h \
     $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
@@ -870,10 +900,11 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/projid.h \
   include/uapi/linux/quota.h \
   include/linux/nfs_fs_i.h \
+  include/linux/cacheflush.h \
+  arch/x86/include/asm/cacheflush.h \
   include/linux/mm.h \
     $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
     $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
     $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
     $(wildcard include/config/ARCH_HAS_PKEYS) \
     $(wildcard include/config/PPC) \
@@ -884,9 +915,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/ARM64_MTE) \
     $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
     $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/DEV_PAGEMAP_OPS) \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/PCI_P2PDMA) \
     $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
     $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
     $(wildcard include/config/DEBUG_VM_RB) \
@@ -896,20 +924,17 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/DEBUG_PAGEALLOC) \
     $(wildcard include/config/HUGETLBFS) \
     $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
+    $(wildcard include/config/ANON_VMA_NAME) \
   include/linux/mmap_lock.h \
-  include/linux/percpu-refcount.h \
   include/linux/page_ext.h \
   include/linux/stacktrace.h \
-    $(wildcard include/config/STACKTRACE) \
     $(wildcard include/config/ARCH_STACKWALK) \
+    $(wildcard include/config/STACKTRACE) \
     $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
   include/linux/stackdepot.h \
     $(wildcard include/config/STACKDEPOT) \
   include/linux/page_ref.h \
     $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/memremap.h \
-  include/linux/ioport.h \
-  include/linux/overflow.h \
   include/linux/sizes.h \
   include/linux/pgtable.h \
     $(wildcard include/config/HIGHPTE) \
@@ -921,10 +946,13 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/X86_ESPFIX64) \
   arch/x86/include/asm/pgtable.h \
     $(wildcard include/config/DEBUG_WX) \
+    $(wildcard include/config/PAGE_TABLE_CHECK) \
   arch/x86/include/asm/pkru.h \
   arch/x86/include/asm/fpu/api.h \
     $(wildcard include/config/X86_DEBUG_FPU) \
+  arch/x86/include/asm/coco.h \
   include/asm-generic/pgtable_uffd.h \
+  include/linux/page_table_check.h \
   arch/x86/include/asm/pgtable_64.h \
   arch/x86/include/asm/fixmap.h \
     $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
@@ -935,10 +963,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/uapi/asm/vsyscall.h \
   include/asm-generic/fixmap.h \
   arch/x86/include/asm/pgtable-invert.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
   include/linux/huge_mm.h \
   include/linux/sched/coredump.h \
     $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
@@ -949,6 +973,8 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/vm_event_item.h \
     $(wildcard include/config/MEMORY_BALLOON) \
     $(wildcard include/config/BALLOON_COMPACTION) \
+    $(wildcard include/config/ZSWAP) \
+  include/asm-generic/cacheflush.h \
   include/linux/hardirq.h \
   include/linux/context_tracking_state.h \
     $(wildcard include/config/CONTEXT_TRACKING) \
@@ -966,8 +992,6 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/X86_MCE_AMD) \
     $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
     $(wildcard include/config/HYPERV) \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
   include/linux/highmem-internal.h \
   include/linux/socket.h \
   arch/x86/include/generated/uapi/asm/socket.h \
@@ -980,24 +1004,15 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/uapi/linux/socket.h \
   include/linux/net.h \
   include/linux/random.h \
+    $(wildcard include/config/VMGENID) \
     $(wildcard include/config/ARCH_RANDOM) \
   include/linux/once.h \
   include/uapi/linux/random.h \
   include/linux/irqnr.h \
   include/uapi/linux/irqnr.h \
   include/linux/prandom.h \
-  include/linux/siphash.h \
   arch/x86/include/asm/archrandom.h \
   include/linux/sockptr.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/HAVE_HARDENED_USERCOPY_ALLOCATOR) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-    $(wildcard include/config/CC_IS_GCC) \
-    $(wildcard include/config/CLANG_VERSION) \
   include/uapi/linux/net.h \
   include/linux/textsearch.h \
   include/net/checksum.h \
@@ -1008,10 +1023,10 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/HAS_DMA) \
     $(wildcard include/config/NEED_DMA_MAP_STATE) \
   include/linux/device.h \
-    $(wildcard include/config/ENERGY_MODEL) \
     $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/PINCTRL) \
     $(wildcard include/config/GENERIC_MSI_IRQ) \
+    $(wildcard include/config/ENERGY_MODEL) \
+    $(wildcard include/config/PINCTRL) \
     $(wildcard include/config/DMA_OPS) \
     $(wildcard include/config/DMA_DECLARE_COHERENT) \
     $(wildcard include/config/DMA_CMA) \
@@ -1033,18 +1048,20 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/KERNFS) \
   include/linux/idr.h \
   include/linux/kobject_ns.h \
-  include/linux/kref.h \
   include/linux/sched/cpufreq.h \
     $(wildcard include/config/CPU_FREQ) \
   include/linux/sched/topology.h \
     $(wildcard include/config/SCHED_DEBUG) \
+    $(wildcard include/config/SCHED_CLUSTER) \
     $(wildcard include/config/SCHED_MC) \
     $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
   include/linux/sched/idle.h \
   include/linux/sched/sd_flags.h \
+  include/linux/ioport.h \
   include/linux/klist.h \
   include/linux/pm.h \
     $(wildcard include/config/VT_CONSOLE_SLEEP) \
+    $(wildcard include/config/CXL_SUSPEND) \
     $(wildcard include/config/PM) \
     $(wildcard include/config/PM_CLK) \
     $(wildcard include/config/PM_GENERIC_DOMAINS) \
@@ -1052,6 +1069,48 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/ACPI) \
   include/linux/device/class.h \
   include/linux/device/driver.h \
+  include/linux/module.h \
+    $(wildcard include/config/MODULES_TREE_LOOKUP) \
+    $(wildcard include/config/STACKTRACE_BUILD_ID) \
+    $(wildcard include/config/MODULE_SIG) \
+    $(wildcard include/config/ARCH_WANTS_MODULES_DATA_IN_VMALLOC) \
+    $(wildcard include/config/KALLSYMS) \
+    $(wildcard include/config/BPF_EVENTS) \
+    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
+    $(wildcard include/config/EVENT_TRACING) \
+    $(wildcard include/config/MODULE_UNLOAD) \
+    $(wildcard include/config/CONSTRUCTORS) \
+    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
+  include/linux/buildid.h \
+    $(wildcard include/config/CRASH_CORE) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_64.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
   arch/x86/include/asm/device.h \
   include/linux/pm_wakeup.h \
   include/linux/dma-direction.h \
@@ -1067,6 +1126,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   arch/x86/include/generated/asm/early_ioremap.h \
   include/asm-generic/early_ioremap.h \
     $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
+  arch/x86/include/asm/shared/io.h \
   include/asm-generic/iomap.h \
     $(wildcard include/config/HAS_IOPORT_MAP) \
   include/asm-generic/pci_iomap.h \
@@ -1091,15 +1151,18 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/linux/in6.h \
   include/uapi/linux/in6.h \
   include/uapi/linux/libc-compat.h \
+  include/linux/siphash.h \
   include/uapi/linux/if_ether.h \
   include/linux/splice.h \
   include/linux/pipe_fs_i.h \
   include/uapi/linux/if_packet.h \
   include/net/flow.h \
   include/net/page_pool.h \
+    $(wildcard include/config/PAGE_POOL_STATS) \
   include/linux/ptr_ring.h \
   include/linux/netfilter/nf_conntrack_common.h \
   include/uapi/linux/netfilter/nf_conntrack_common.h \
+  include/net/net_debug.h \
   include/net/scm.h \
     $(wildcard include/config/SECURITY_NETWORK) \
   include/linux/security.h \
@@ -1110,6 +1173,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/SECURITY_INFINIBAND) \
     $(wildcard include/config/SECURITY_NETWORK_XFRM) \
     $(wildcard include/config/SECURITY_PATH) \
+    $(wildcard include/config/IMA_LSM_RULES) \
     $(wildcard include/config/SECURITYFS) \
   include/linux/kernel_read_file.h \
   include/linux/file.h \
@@ -1129,6 +1193,7 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
     $(wildcard include/config/CRYPTO_USER) \
     $(wildcard include/config/SMC) \
     $(wildcard include/config/NET_NS) \
+    $(wildcard include/config/NET_NS_REFCNT_TRACKER) \
   include/net/netns/core.h \
   include/net/netns/mib.h \
     $(wildcard include/config/XFRM_STATISTICS) \
@@ -1191,62 +1256,19 @@ deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/mai
   include/net/netns/xdp.h \
   include/net/netns/smc.h \
   include/net/netns/bpf.h \
-  include/linux/bpf-netns.h \
-  include/uapi/linux/bpf.h \
-    $(wildcard include/config/CGROUP_BPF) \
-    $(wildcard include/config/BPF_LIRC_MODE2) \
-    $(wildcard include/config/EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/BPF_KPROBE_OVERRIDE) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-  include/uapi/linux/bpf_common.h \
   include/net/netns/mctp.h \
+  include/net/net_trackers.h \
+    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
+  include/linux/ref_tracker.h \
+    $(wildcard include/config/REF_TRACKER) \
   include/linux/ns_common.h \
   include/linux/seq_file_net.h \
   include/linux/seq_file.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_64.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-    $(wildcard include/config/X86_X32) \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
+  include/linux/string_helpers.h \
+  include/linux/ctype.h \
 
-/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o: $(deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o)
+/home/boaz/netlink/tests/kernel_module/main.o: $(deps_/home/boaz/netlink/tests/kernel_module/main.o)
 
-$(deps_/home/boaz/Documents/school/firewallservice/netlink/tests/kernel_module/main.o):
+$(deps_/home/boaz/netlink/tests/kernel_module/main.o):
+
+/home/boaz/netlink/tests/kernel_module/main.o: $(wildcard ./tools/objtool/objtool)
