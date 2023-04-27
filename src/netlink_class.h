@@ -24,7 +24,7 @@
  */
 typedef struct {
     PyObject_HEAD
-    char family_name[256];
+    int family_name;
     struct netlink *netlink;
 } NetLink; 
 

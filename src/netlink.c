@@ -27,70 +27,81 @@ int create_socket();
  * @param nl allocated buffer.
  * @param magic_number the magic protocol (same in kernel).
  */
-struct netlink *initialize_netlink(struct netlink *nl, char *family_name) {
+struct netlink *initialize_netlink(struct netlink *nl, int family_name) {
     nl->sock = (struct nl_sock *)nl_socket_alloc();
-    memcpy(nl->family_name, family_name, 256);
-    if (!nl->sock) printf("bad shit\n");
-    
-    int res =nl_connect(nl->sock, 31);
-    printf("res: %d\n", res);
-    nl->protocol = genl_ctrl_resolve(nl->sock, "echo");
-    printf("protocol: %d\n", genl_ctrl_resolve(nl->sock, "echo"));
 
-    memset(&nl->src_addr, 0, sizeof(struct sockaddr_nl));
-    nl->src_addr.nl_family = AF_NETLINK;
-    nl->src_addr.nl_pid = getpid(); /* self pid */
+    nl->family_id = family_name;
+    nl->pid = getpid();
+    nl->protocol = NETLINK_GENERIC;
 
-    memset(&nl->dst_addr, 0, sizeof(struct sockaddr_nl));
-    nl->dst_addr.nl_family = AF_NETLINK;
-    nl->dst_addr.nl_pid = 0;    /* For Linux Kernel */
-    nl->dst_addr.nl_groups = 0; /* unicast */
+    nl_connect(nl->sock, nl->protocol);
 
     return nl;
 }
 
-int do_nl(struct netlink *nl, const void *attribute, uint8_t attribute_type,
-          uint8_t command, ssize_t attr_size) {
-    struct nl_msg *msg = (struct nl_msg *)nlmsg_alloc();
+int send_nl(struct netlink *nl, char *buffer, ssize_t msg_size, int message_type,
+            int flags) {
+    struct nlmsghdr *nlh;
+    struct nl_msg *msg;
+
+    msg = nlmsg_alloc();
     if (!msg) {
+        fprintf(stderr, "Error: failed to allocate Netlink message\n");
         return -1;
     }
 
-	struct ifinfomsg ifi = {
+    nlh = nlmsg_put(msg, nl->pid, 0, NLMSG_DONE, msg_size, flags);
+    if (!nlh) {
+        fprintf(stderr, "Error: failed to initialize Netlink message header\n");
+        return -1;
+    }
 
-		.ifi_family = AF_INET,
+    memcpy(NLMSG_DATA(nlh), buffer, msg_size);
 
-		.ifi_index = nl->protocol,
+    int ret = nl_send_auto(nl->sock, msg);
+    if (ret < 0) {
+        fprintf(stderr, "Error: failed to send Netlink message\n");
+        return -1;
+    }
 
-	};
-
-	printf("protocol: %d\n", nl->protocol);
-	printf("nl dst: %d\n", nl->dst_addr.nl_pid);
-    nlmsg_append(msg, &ifi, sizeof(ifi), NLMSG_ALIGNTO);
-    struct nl_addr *addr;
-    addr = nl_addr_build(AF_NETLINK, &nl->dst_addr.nl_pid, sizeof(nl->dst_addr.nl_pid));
-   
-    NLA_PUT_U32(msg, IFLA_MTU, 4096); 
-    NLA_PUT_ADDR(msg, IFLA_ADDRESS, addr);
-    NLA_PUT_STRING(msg, attribute_type, attribute);
-    
-
-    int res = nl_send_auto(nl->sock, msg);
-    
-    nl_addr_put(addr);
     nlmsg_free(msg);
 
-    return res;
-
-    nla_put_failure:
-
-        nlmsg_free(msg);
-
-        return NULL;
+    return ret;
 }
 
-
-void close_nl(struct netlink *nl) 
+int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags)
 {
-    nl_socket_free(nl->sock);
+    struct nlmsghdr *nlh;
+    struct nl_msg *msg;
+
+    msg = nlmsg_alloc();
+    if (!msg) {
+        fprintf(stderr, "Error: Failed to allocated memory for msg\n");
+        return -1;
+    }
+
+    int ret = nl_recvmsgs(nl->sock, msg);
+    if (ret < 0) {
+        fprintf(stderr, "Error: Failed to receive netlink message\n");
+        nlmsg_free(msg);
+        return -1;
+    }
+
+    nlh = nlmsg_hdr(msg);
+
+    if (nlh->nlmsg_type == NLMSG_ERROR) {
+        fprintf(stderr, "Error: received Netlink error message\n");
+        nlmsg_free(msg);
+        return -1;
+    }
+
+    if (nlh->nlmsg_len > sizeof(struct nlmsghdr)) {
+        memcpy(buf, NLMSG_DATA(nlh), buffer_size);
+    }
+
+    nlmsg_free(msg);
+
+    return 0;
 }
+
+void close_nl(struct netlink *nl) { nl_socket_free(nl->sock); }

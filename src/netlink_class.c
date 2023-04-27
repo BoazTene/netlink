@@ -19,20 +19,43 @@
 
 #include <Python.h>
 
-static PyObject *netlink_do(NetLink *self, PyObject *args) {
-    Py_buffer attr;
-    int command;
-    int attr_type;
+static PyObject *netlink_send(NetLink *self, PyObject *args) {
+    Py_buffer buffer;
+    int message_type;
+    int flags;
+    
+    if (!PyArg_ParseTuple(args, "iiy*", &message_type, &flags, &buffer)) {
+        printf("lsls: %d, %d\n", message_type, flags);
 
-    if (!PyArg_ParseTuple(args, "iiy*", &attr_type, &command, &attr)) {
         PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
         return NULL;
     }
 
-    do_nl(self->netlink, (char *)attr.buf, attr_type, command, attr.len);
-    PyBuffer_Release(&attr);
+    send_nl(self->netlink, (char *)buffer.buf, buffer.len, message_type, flags);
+    PyBuffer_Release(&buffer);
 
     Py_RETURN_NONE;
+}
+
+static PyObject *netlink_recv(NetLink *self, PyObject *args)
+{
+    int buffer_size;
+    int flags;
+
+    if (!PyArg_ParseTuple(args, "ii", &buffer_size, &flags)) {
+            PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
+            return NULL;
+    }
+
+    if (buffer_size > MAX_PAYLOAD) {
+        PyErr_SetString(PyExc_TypeError, "Buffer size too big");
+        return NULL;
+    }
+
+    char buffer[buffer_size];
+    recv_nl(self->netlink, buffer, buffer_size, flags);
+
+    return PyUnicode_FromString(buffer);
 }
 
 static PyObject *netlink_close(NetLink *self, PyObject *args) {
@@ -63,14 +86,7 @@ static void NetLink_dealloc(NetLink *self) {
 }
 
 static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
-    Py_buffer family_name;
-    if (!PyArg_ParseTuple(args, "y*", &family_name)) return;
-    strcpy(self->family_name, family_name.buf);
-    PyBuffer_Release(&family_name);
-
-    printf("meow meow meow\n");
-
-    printf("family_name: %s\n", self->family_name);
+    if (!PyArg_ParseTuple(args, "i", &self->family_name)) return;
 
     self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
 
@@ -88,7 +104,8 @@ static PyMemberDef NetLink_members[] = {
 };
 
 static PyMethodDef NetLink_methods[] = {
-    {"do", netlink_do, METH_VARARGS, "Do method"},
+    {"send", netlink_send, METH_VARARGS, "Send method"},
+    {"recv", netlink_recv, METH_VARARGS, "Recv method"},
     {"close", (PyCFunction)netlink_close, METH_VARARGS,
      "closes the connection."},
     {NULL} /* Sentinel */

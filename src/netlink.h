@@ -29,18 +29,21 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#define MAX_PAYLOAD 8692
+
 struct netlink {
-    char family_name[256];
-    unsigned int protocol;
     struct nl_sock *sock;
-    struct sockaddr_nl src_addr;
-    struct sockaddr_nl dst_addr;
+    int family_id;
+    int protocol;
+    int pid;
 };
 
-struct netlink * initialize_netlink(struct netlink *nl, char* family_name);
+struct netlink * initialize_netlink(struct netlink *nl, int family_name);
 
-int do_nl(struct netlink *nl, const void *attributes, __u8 attribute_type, __u8 command,
-          ssize_t attr_size);
+int send_nl(struct netlink *nl, char *buffer, ssize_t msg_size, int message_type,
+            int flags);
+
+int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags);
 
 void close_nl(struct netlink *nl);
 
