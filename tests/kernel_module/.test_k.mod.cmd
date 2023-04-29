@@ -1,1 +1,1 @@
-cmd_/home/boaz/netlink/tests/kernel_module/test_k.mod := printf '%s\n'   main.o | awk '!x[$$0]++ { print("/home/boaz/netlink/tests/kernel_module/"$$0) }' > /home/boaz/netlink/tests/kernel_module/test_k.mod
+savedcmd_/home/boaz/netlink/tests/kernel_module/test_k.mod := printf '%s\n'   main.o | awk '!x[$$0]++ { print("/home/boaz/netlink/tests/kernel_module/"$$0) }' > /home/boaz/netlink/tests/kernel_module/test_k.mod

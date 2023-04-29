@@ -30,12 +30,16 @@ static struct PyModuleDef netlink = {
 PyMODINIT_FUNC PyInit_netlink(void) {
   PyObject *module;
 
-  if (PyType_Ready(&NetLinkType) < 0)
+  if (PyType_Ready(&NetLinkType) < 0) {
+	  printf("lalala ready false\n");
     return NULL;
+
+  }
 
   module = PyModule_Create(&netlink);
 
   if (!module) {
+	  printf("lala module not created\n");
     return NULL;
   }
 

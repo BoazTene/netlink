@@ -18,6 +18,7 @@
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/msg.h>
+#include <netlink/attr.h>
 #include <netlink/socket.h>
 #include <netlink/genl/genl.h>
 #include <netlink/genl/ctrl.h>
@@ -38,7 +39,7 @@ struct netlink {
     int pid;
 };
 
-struct netlink * initialize_netlink(struct netlink *nl, int family_name);
+struct netlink * initialize_netlink(struct netlink *nl, char *family_name);
 
 int send_nl(struct netlink *nl, char *buffer, ssize_t msg_size, int message_type,
             int flags);

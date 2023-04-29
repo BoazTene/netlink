@@ -1,96 +1,286 @@
 #include <net/genetlink.h>
-#include <linux/kernel.h>
 #include <linux/module.h>
-#include <linux/netlink.h>
+#include <linux/kernel.h>
 
-#define NL_ECHO_FAMILY_NAME "echo"
-#define NL_ECHO_FAMILY_VERSION 0x01
+/* attributes (variables):
+ * the index in this enum is used as a reference for the type,
+ * userspace application has to indicate the corresponding type
+ * the policy is used for security considerations 
+ */
+enum {
+    FAMILY1_A_UNSPEC,
+    FAMILY1_A_MSG,
+    __FAMILY1_A_MAX,
+};
+#define FAMILY1_A_MAX (__FAMILY1_A_MAX - 1)
 
-static int nl_echo_recv_msg(struct sk_buff *skb, struct genl_info *info);
+/* attribute policy: defines which attribute has which type (e.g int, char * etc)
+ * possible values defined in net/netlink.h 
+ */
 
-enum nl_echo_attrs {
-    NL_ECHO_MSG_ATTR = 0,
-    NL_ECHO_MAX_ATTR,
+static struct nla_policy family1_genl_policy[FAMILY1_A_MAX + 1] = {
+    [FAMILY1_A_MSG] = { .type = NLA_STRING, .len=100},
 };
 
-static const struct nla_policy my_policy[NL_ECHO_MAX_ATTR+1] = {
-     [NL_ECHO_MAX_ATTR] = { .type = NLA_STRING, .len = 4096 },
+/* 
+ *Attributes and policies for family 2
+ */
+enum {
+    FAMILY2_A_UNSPEC,
+    FAMILY2_A_MSG,
+    __FAMILY2_A_MAX,
+};
+#define FAMILY2_A_MAX (__FAMILY2_A_MAX - 1)
+
+static struct nla_policy family2_genl_policy[FAMILY2_A_MAX + 1] = {
+    [FAMILY2_A_MSG] = { .type = NLA_NUL_STRING },
 };
 
-static const struct genl_ops nl_echo_ops[] = {
-    {
-        .cmd = 0,
-        .flags = 0,
-        .policy = my_policy,
-        .doit = nl_echo_recv_msg,
-        .dumpit = NULL,
-    },
+/* 
+ * Attributes and policies for family 3
+ */
+enum {
+    FAMILY3_A_UNSPEC,
+    FAMILY3_A_MSG,
+    __FAMILY3_A_MAX,
+};
+#define FAMILY3_A_MAX (__FAMILY3_A_MAX - 1)
+
+static struct nla_policy family3_genl_policy[FAMILY3_A_MAX + 1] = {
+    [FAMILY3_A_MSG] = { .type = NLA_NUL_STRING, .len=100 },
 };
 
-static struct genl_family nl_echo_family = {
+// static struct nla_policy family3_genl_policy[FAMILY3_A_MAX + 1] = {
+//     [FAMILY3_A_MSG] = { .type = NLA_U32 },
+// };
+
+// static struct nla_policy family3_genl_policy[FAMILY3_A_MAX + 1] = {
+//     [FAMILY3_A_MSG] = { .type = NLA_UNSPEC },
+// };
+
+/**
+ * Version Number of various families
+ */
+#define FAMILY1_VERSION_NR 1
+#define FAMILY2_VERSION_NR 1
+#define FAMILY3_VERSION_NR 1
+
+
+static struct genl_family family2_gnl_family = {
     .id = 0,
     .hdrsize = 0,
-    .name = NL_ECHO_FAMILY_NAME,
-    .version = NL_ECHO_FAMILY_VERSION,
-    .maxattr = NL_ECHO_MAX_ATTR,
-    .ops = nl_echo_ops,
+    .name = "FAMILY2",     
+    .version = FAMILY2_VERSION_NR,  
+    .maxattr = FAMILY2_A_MAX,
 };
 
-static int nl_echo_recv_msg(struct sk_buff *skb, struct genl_info *info) {
-    struct sk_buff *skb_out;
-    char *msg = "Echo from kernel: ";
-    int msg_size =
-        strlen(msg) + strlen(nla_data(info->attrs[NL_ECHO_MSG_ATTR]));
-    int res;
 
-    skb_out = genlmsg_new(msg_size, GFP_KERNEL);
-    if (!skb_out) {
-        printk(KERN_ERR "Failed to allocate new skb\n");
-        return -ENOMEM;
-    }
+/* commands: enumeration of all commands (functions), 
+ * used by userspace application to identify command to be executed
+ */
+enum {
+    FAMILY_C_UNSPEC,
+    FAMILY_C_SEND,
+    FAMILY_C_RECV,
+    __FAMILY_C_MAX,
+};
+#define FAMILY_C_MAX (__FAMILY_C_MAX - 1)
+int family1_recv(struct sk_buff *skb_temp, struct genl_info *info);
 
-    genlmsg_put(skb_out, 0, info->snd_seq, &nl_echo_family, 0, 1);
-    nla_put_string(skb_out, NL_ECHO_MSG_ATTR,
-                   nla_data(info->attrs[NL_ECHO_MSG_ATTR]));
+/*
+ * Commands: mapping between the command enumeration and the actual function
+ */
+struct genl_ops family1_gnl_ops_recv[] = {{
+    .cmd = FAMILY_C_SEND,
+    .flags = 0,
+    .policy = family1_genl_policy,
+    .doit = family1_recv,
+    .dumpit = NULL,
+}};
 
-    genlmsg_end(skb_out, NULL);
+
+static struct genl_family family1_gnl_family = {
+    .id = 0,      
+    .hdrsize = 0,
+    .name = "FAMILY1",
+    .version = FAMILY1_VERSION_NR,
+    .maxattr = FAMILY1_A_MAX,
+    .n_ops = 1,
+    .ops = family1_gnl_ops_recv,
+};
+
+
+
+/**
+ * Callback for hadnling family1 data reception
+*/
+int family1_recv(struct sk_buff *skb_temp, struct genl_info *info) {
+    struct nlattr *na, *validate_attrs[FAMILY1_A_MAX + 1];
+    struct sk_buff *skb;
+    int rc, is_valid;
+    void *msg_head;
+    char * recvd_data;
+    int *recvd_int;
     
-    res = genlmsg_unicast(genl_info_net(info), skb_out, info->snd_portid);
-    if (res < 0) {
-        printk(KERN_ERR "Error while sending back to user\n");
-        return res;
+    if (info == NULL) {
+        printk("Info is null. \n");
     }
 
+    na = info->attrs[FAMILY1_A_MSG];
+    if (na) {
+        /**
+         * Validate attributes
+        */
+        
+
+        recvd_data = (char *)nla_data(na);
+        if (recvd_data == NULL) {
+            printk("error while receiving data\n");
+        } else {
+            printk("received: %s\n", recvd_data);
+        }
+        // recvd_int = (int *)nla_data(na);
+        // printk("received: %d\n", *recvd_int);
+    } else {
+        printk("no info->attrs %i\n", FAMILY1_A_MSG);
+    }
+
+    
+  
+    return 0;
+}
+/**
+ * Callback for hadnling family2 data reception
+*/
+int family2_recv(struct sk_buff *skb_temp, struct genl_info *info) {
+    struct nlattr *na;
+    struct sk_buff *skb;
+    int rc;
+    void *msg_head;
+    char * recvd_data;
+    
+    if (info == NULL) {
+        goto out;
+    }
+  
+    /* For each attribute there is an index in info->attrs which points to a nlattr structure
+     * in this structure the data is given
+     */
+    na = info->attrs[FAMILY2_A_MSG];
+    if (na) {
+        recvd_data = (char *)nla_data(na);
+        if (recvd_data == NULL) {
+            printk("error while receiving data\n");
+        } else {
+            printk("received: %s\n", recvd_data);
+        }
+    } else {
+        printk("no info->attrs %i\n", FAMILY2_A_MSG);
+    }
+
+    /* Send a message back
+     * Allocate some memory, since the size is not yet known use NLMSG_GOODSIZE
+     */
+    skb = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
+    if (skb == NULL) {
+        goto out;
+    }
+
+    //Create the message headers
+    /* arguments of genlmsg_put: 
+       struct sk_buff *, 
+       int (sending) pid, 
+       int sequence number, 
+       struct genl_family *, 
+       int flags, 
+       u8 command index (why do we need this?)
+    */
+    msg_head = genlmsg_put(skb, 0, info->snd_seq+1, &family2_gnl_family, 0, FAMILY_C_RECV);
+    if (msg_head == NULL) {
+        rc = -ENOMEM;
+        goto out;
+    }
+    //Add a FAMILY1_A_MSG attribute (actual value to be sent)
+    rc = nla_put_string(skb, FAMILY2_A_MSG, "Reply from family 2");
+    if (rc != 0) {
+        goto out;
+    }
+    
+    //Finalize the message
+    genlmsg_end(skb, msg_head);
+
+    //Send the message back
+    rc = genlmsg_unicast(genl_info_net(info), skb, info->snd_portid );
+    if (rc != 0) {
+        goto out;
+    }
+    return 0;
+
+    out:
+    printk("An error occured in family 2 receive:\n");
     return 0;
 }
 
-
-
-static int __init
-nl_echo_init(void) {
-    int rc = 0;
-
-    printk(KERN_INFO "Initializing Netlink Echo module\n");
-
-    rc = genl_register_family(&nl_echo_family);
-    printk("Error code: %d\n",  rc);
-    if (rc < 0) {
-        printk(KERN_ERR "Failed to register netlink family: %d\n", rc);
-        return rc;
+/*
+ * Commands: mapping between the command enumeration and the actual function
+ */
+struct genl_ops family2_gnl_ops_recv = {
+    .cmd = FAMILY_C_SEND,
+    .flags = 0,
+    .policy = family2_genl_policy,
+    .doit = family2_recv,
+    .dumpit = NULL,
+};
+/**
+    Module entry
+*/
+static int __init gnKernel_init(void) {
+    int rc;
+    printk("Generic Netlink Example Module inserted.\n");
+    printk("Netlink send cmd: %d\n", FAMILY_C_SEND);
+           
+    /*
+     * Register the 3 families
+     */
+    rc = genl_register_family(&family1_gnl_family);
+    if (rc != 0) {
+        goto failure;
     }
 
-     return 0;
+    rc = genl_register_family(&family2_gnl_family);
+    if (rc != 0) {
+        goto failure;
+    }
+
+    if (rc != 0) {
+        goto failure;
+    }
+        return 0; 
+failure:
+    printk("An error occured while inserting the generic netlink module\n");
+    return -1;
 }
 
-static void __exit nl_echo_exit(void) {
-    printk(KERN_INFO "Exiting Netlink Echo module\n");
-
-    genl_unregister_family(&nl_echo_family);
+static void __exit gnKernel_exit(void) {
+    int ret;
+    printk("Generic Netlink Example Module unloaded.\n");
+       //Unregister the family
+    ret = genl_unregister_family(&family1_gnl_family);
+    if(ret !=0) {
+        printk("Unregister family 1: %i\n",ret);
+        return;
+    }
+    ret = genl_unregister_family(&family2_gnl_family);
+    if(ret !=0) {
+        printk("Unregister family 2: %i\n",ret);
+        return;
+    }
+    if(ret !=0) {
+        printk("Unregister family 3: %i\n",ret);
+        return;
+    }
 }
 
-module_init(nl_echo_init);
-module_exit(nl_echo_exit);
-
+module_init(gnKernel_init);
+module_exit(gnKernel_exit);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Your Name");
-MODULE_DESCRIPTION("Netlink Echo Module");

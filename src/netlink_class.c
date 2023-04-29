@@ -20,24 +20,33 @@
 #include <Python.h>
 
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
-    const char *buffer;
+    char *buffer;
     Py_ssize_t len;
     int message_type;
     int flags;
-
-    if (!PyArg_ParseTuple(args, "iiy#", &message_type, &flags, &buf, &len)) {
+    int isBytesArray = 0;
+    
+    if (!PyArg_ParseTuple(args, "iiy#", &message_type, &flags, &buffer, &len)) {
         PyErr_Clear();
-        PyObject *obj;
-        if (!PyArg_ParseTuple(args, "iiO&", &message_type, &flags,
-                              PyByteArray_FromObject, &obj)) {
+        Py_buffer obj;
+        if (!PyArg_ParseTuple(args, "iiy*", &message_type, &flags,
+                              &obj)) {
             PyErr_SetString(PyExc_TypeError, "Expected bytes-like object");
             return NULL;
         }
-        buf = PyByteArray_AsString(obj);
-        len = PyByteArray_Size(obj);
+	buffer = (char *) malloc(obj.len);
+	memcpy(buffer, obj.buf, obj.len);
+	len = obj.len;
+
+	PyBuffer_Release(&obj);
+	isBytesArray = 1;
     }
 
     send_nl(self->netlink, (char *)buffer, len, message_type, flags);
+
+    if (isBytesArray) {
+	free(buffer);
+    }
 
     Py_RETURN_NONE;
 }
@@ -90,7 +99,7 @@ static void NetLink_dealloc(NetLink *self) {
 }
 
 static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
-    if (!PyArg_ParseTuple(args, "i", &self->family_name)) return;
+    if (!PyArg_ParseTuple(args, "s", &self->family_name)) return;
 
     self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
 
