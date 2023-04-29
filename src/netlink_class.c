@@ -20,31 +20,35 @@
 #include <Python.h>
 
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
-    Py_buffer buffer;
+    const char *buffer;
+    Py_ssize_t len;
     int message_type;
     int flags;
-    
-    if (!PyArg_ParseTuple(args, "iiy*", &message_type, &flags, &buffer)) {
-        printf("lsls: %d, %d\n", message_type, flags);
 
-        PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
-        return NULL;
+    if (!PyArg_ParseTuple(args, "iiy#", &message_type, &flags, &buf, &len)) {
+        PyErr_Clear();
+        PyObject *obj;
+        if (!PyArg_ParseTuple(args, "iiO&", &message_type, &flags,
+                              PyByteArray_FromObject, &obj)) {
+            PyErr_SetString(PyExc_TypeError, "Expected bytes-like object");
+            return NULL;
+        }
+        buf = PyByteArray_AsString(obj);
+        len = PyByteArray_Size(obj);
     }
 
-    send_nl(self->netlink, (char *)buffer.buf, buffer.len, message_type, flags);
-    PyBuffer_Release(&buffer);
+    send_nl(self->netlink, (char *)buffer, len, message_type, flags);
 
     Py_RETURN_NONE;
 }
 
-static PyObject *netlink_recv(NetLink *self, PyObject *args)
-{
+static PyObject *netlink_recv(NetLink *self, PyObject *args) {
     int buffer_size;
     int flags;
 
     if (!PyArg_ParseTuple(args, "ii", &buffer_size, &flags)) {
-            PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
-            return NULL;
+        PyErr_SetString(PyExc_TypeError, "Received invalid argument.");
+        return NULL;
     }
 
     if (buffer_size > MAX_PAYLOAD) {
