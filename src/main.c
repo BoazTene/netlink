@@ -35,7 +35,7 @@ PyMODINIT_FUNC PyInit_netlink(void) {
 	      return NULL;
   }
 
-  if (PyType_Read(&MessageType) < 0) {
+  if (PyType_Ready(&MessageType) < 0) {
       return NULL;
   }
 
@@ -48,8 +48,8 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   Py_INCREF(&NetLinkType);
   PyModule_AddObject(module, "NetLink", (PyObject *)&NetLinkType);
 
-  Py_INCREF(&MessageTYPE);
-  PyModule_AddObject(module, "Message", (PyOjbect *) &MessageType);
+  Py_INCREF(&MessageType);
+  PyModule_AddObject(module, "Message", (PyObject *) &MessageType);
 
   return module;
 }

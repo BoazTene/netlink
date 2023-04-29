@@ -1,27 +1,25 @@
 #include "message.h"
 
 
-static const char* reserve_docs = "Reserves room for additional data at the tail of the an existing netlink message. Eventual padding required will be zeroed out."
-                                  "@param len length of additional data to reserve room for"
-                                  "@param pad number of bytes to align data to"
-                                  "@return null";
+#define reserve_docs "Reserves room for additional data at the tail of the an existing netlink message. Eventual padding required will be zeroed out.\n@param len length of additional data to reserve room for\n@param pad number of bytes to align data to\n@return null"
+
+
 static PyObject * message_reserve(Message *self, PyObject *args) {
     int len;
     int pad;
 
-    if (!Py_ParseTuple(args, "ii", &len, &pad)) {
+    if (!PyArg_ParseTuple(args, "ii", &len, &pad)) {
         return NULL;
     }
 
     nlmsg_reserve(self->msg, len, pad);
 
-    PY_RETURN_NONE;
+    Py_RETURN_NONE;
 }
 
-static const char *append_docs = "Append data to tail of a netlink message"
-                                 "@param data data to add"
-                                 "@param len length of data"
-                                 "@param pad Number of bytes to align data to";
+#define append_docs "Append data to tail of a netlink message\n@param data data to add\n@param len length of data\n@param pad Number of bytes to align data to"
+				 
+
 static PyObject * message_append(Message *self, PyObject *args) {
     Py_buffer buffer;
     int pad;
@@ -36,12 +34,12 @@ static PyObject * message_append(Message *self, PyObject *args) {
 
     PyBuffer_Release(&buffer);
 
-    PY_RETURN_NONE; 
+    Py_RETURN_NONE; 
 }
 
-static const char *nla_put_docs = "Add a unspecific attribute to netlink message."
-                                 "@param attribute_type Attribute type."
-                                 "@param data Pointer to data to be used as attribute payload.";
+#define nla_put_docs "Add a unspecific attribute to netlink message.\n@param attribute_type Attribute type.\n@param data Pointer to data to be used as attribute payload."
+
+
 static PyObject * message_nla_put(Message *self, PyObject *args) {
     Py_buffer buffer;
     int attribute_type;
@@ -54,7 +52,7 @@ static PyObject * message_nla_put(Message *self, PyObject *args) {
 
     PyBuffer_Release(&buffer);
 
-    PY_RETURN_NONE;
+    Py_RETURN_NONE;
 }
 
 static PyObject *Message_new(PyTypeObject *type, PyObject *args,
@@ -90,7 +88,7 @@ static void Message_init(Message *self, PyObject *args, PyObject *kwds) {
        return;
     } 
 
-    if (!genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, family_id, hdrlen, flags, cmd, version)) {
+    if (!genlmsg_put(self->msg, NL_AUTO_PORT, NL_AUTO_SEQ, family_id, hdrlen, flags, cmd, version)) {
         nlmsg_free(self->msg);
         return;
     }

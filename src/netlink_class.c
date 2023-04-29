@@ -21,15 +21,21 @@
 #include <Python.h>
 
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
-    Message message;
+    Message *message;
 
-    if (!PyArg_ParseTuple(args, "O", &(PyObject)message)) {
+    if (!PyArg_ParseTuple(args, "O!", &MessageType, &(message))) {
         return NULL;
     }
 
-    send_nl(self->netlink, message.msg);
+    PyObject_Print((PyObject*)message, stdout, 0);
+
+    send_nl(self->netlink, message->msg);
 
     Py_RETURN_NONE;
+}
+
+static PyObject *netlink_get_family_id(NetLink *self, PyObject *args) {
+	return PyLong_FromLong(self->netlink->family_id);
 }
 
 static PyObject *netlink_recv(NetLink *self, PyObject *args) {
@@ -101,6 +107,7 @@ static PyMemberDef NetLink_members[] = {
 static PyMethodDef NetLink_methods[] = {
     {"send", netlink_send, METH_VARARGS, "Send method"},
     {"recv", netlink_recv, METH_VARARGS, "Recv method"},
+    {"get_family_id", netlink_get_family_id, METH_VARARGS, "Gets the family id.\n@return the family id"},
     {"close", (PyCFunction)netlink_close, METH_VARARGS,
      "closes the connection."},
     {NULL} /* Sentinel */

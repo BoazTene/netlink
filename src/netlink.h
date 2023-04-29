@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#ifndef NETLINK_H
+#define NETLINK_H
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/msg.h>
@@ -46,4 +48,5 @@ int send_nl(struct netlink *nl, struct nl_msg * msg);
 int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags);
 
 void close_nl(struct netlink *nl);
+#endif
 
