@@ -16,37 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "netlink_class.h"
+#include "message.h"
 
 #include <Python.h>
 
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
-    char *buffer;
-    Py_ssize_t len;
-    int message_type;
-    int flags;
-    int isBytesArray = 0;
-    
-    if (!PyArg_ParseTuple(args, "iiy#", &message_type, &flags, &buffer, &len)) {
-        PyErr_Clear();
-        Py_buffer obj;
-        if (!PyArg_ParseTuple(args, "iiy*", &message_type, &flags,
-                              &obj)) {
-            PyErr_SetString(PyExc_TypeError, "Expected bytes-like object");
-            return NULL;
-        }
-	buffer = (char *) malloc(obj.len);
-	memcpy(buffer, obj.buf, obj.len);
-	len = obj.len;
+    Message message;
 
-	PyBuffer_Release(&obj);
-	isBytesArray = 1;
+    if (!PyArg_ParseTuple(args, "O", &(PyObject)message)) {
+        return NULL;
     }
 
-    send_nl(self->netlink, (char *)buffer, len, message_type, flags);
-
-    if (isBytesArray) {
-	free(buffer);
-    }
+    send_nl(self->netlink, message.msg);
 
     Py_RETURN_NONE;
 }
@@ -113,6 +94,7 @@ static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
 
 static PyMemberDef NetLink_members[] = {
     {"__netlink", T_OBJECT_EX, offsetof(NetLink, netlink), 0, "The netlink."},
+    {"family_name", T_STRING, offsetof(NetLink, family_name), 0, "Generic netlink family name."}, 
     {NULL} /* Sentinel */
 };
 

@@ -15,35 +15,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <netlink/netlink.h>
-#include <netlink/genl/genl.h>
-#include <netlink/msg.h>
-#include <netlink/attr.h>
-#include <netlink/socket.h>
-#include <netlink/genl/genl.h>
-#include <netlink/genl/ctrl.h>
-#include <netlink/route/addr.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
+#include "Python.h"
+#include <structmember.h>
+#include "netlink.h"
 
-#define MAX_PAYLOAD 8692
+/**
+ * Represents NetLink class.
+ */
+typedef struct {
+    PyObject_HEAD
+    struct nl_msg *msg;
+} Message; 
 
-struct netlink {
-    struct nl_sock *sock;
-    int family_id;
-    int protocol;
-    int pid;
-};
+extern PyTypeObject MessageType;
 
-struct netlink * initialize_netlink(struct netlink *nl, char *family_name);
-
-int send_nl(struct netlink *nl, struct nl_msg * msg);
-
-int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags);
-
-void close_nl(struct netlink *nl);
 

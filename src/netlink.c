@@ -40,31 +40,12 @@ struct netlink *initialize_netlink(struct netlink *nl, char *family_name) {
     return nl;
 }
 
-int send_nl(struct netlink *nl, char *buffer, ssize_t msg_size, int message_type,
-            int flags) {
-    struct nlmsghdr *nlh;
-    struct nl_msg *msg;
-    
-    msg = nlmsg_alloc();
-    if (!msg) {
-        fprintf(stderr, "Error: failed to allocate Netlink message\n");
-        return -1;
-    }
-    char name[100];
-    strcpy(name, "1234");
-    
-    if (!genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, nl->family_id, 0, 0, 1, 1)) printf("fucking problem\n");
-    
-    nla_put(msg, 1, strlen(name)+1,name); 
-       
+int send_nl(struct netlink *nl, struct nl_msg *msg) {
     int ret = nl_send_auto(nl->sock, msg);
     if (ret < 0) {
         fprintf(stderr, "Error: failed to send Netlink message\n");
         return -1;
     }
-
-    nlmsg_free(msg);
-
     return ret;
 }
 

@@ -18,6 +18,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include "netlink_class.h"
+#include "message.h"
 
 static struct PyModuleDef netlink = {
     PyModuleDef_HEAD_INIT, "netlink", /* name of module */
@@ -31,20 +32,24 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   PyObject *module;
 
   if (PyType_Ready(&NetLinkType) < 0) {
-	  printf("lalala ready false\n");
-    return NULL;
+	      return NULL;
+  }
 
+  if (PyType_Read(&MessageType) < 0) {
+      return NULL;
   }
 
   module = PyModule_Create(&netlink);
 
   if (!module) {
-	  printf("lala module not created\n");
-    return NULL;
+      return NULL;
   }
 
   Py_INCREF(&NetLinkType);
   PyModule_AddObject(module, "NetLink", (PyObject *)&NetLinkType);
+
+  Py_INCREF(&MessageTYPE);
+  PyModule_AddObject(module, "Message", (PyOjbect *) &MessageType);
 
   return module;
 }
