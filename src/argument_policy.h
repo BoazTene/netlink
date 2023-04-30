@@ -18,20 +18,15 @@
 #include "Python.h"
 #include <structmember.h>
 #include "netlink.h"
-#include "argument_policy.h"
 
 /**
  * Represents NetLink class.
  */
 typedef struct {
     PyObject_HEAD
-    char *family_name;
-    struct netlink *netlink;
-    int policies_len;
-    ArgumentPolicy **policies;
-} NetLink; 
+    struct nla_policy policy;
+} ArgumentPolicy; 
 
-extern PyTypeObject NetLinkType;
-
+extern PyTypeObject ArgumentPolicyType;
 
 

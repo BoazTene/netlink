@@ -38,10 +38,12 @@ struct netlink {
     struct nl_sock *sock;
     int family_id;
     int protocol;
+    int policies_len;
+    struct nla_policy *policies;
     int pid;
 };
 
-struct netlink * initialize_netlink(struct netlink *nl, char *family_name);
+struct netlink * initialize_netlink(struct netlink *nl, char *family_name, struct nla_policy *policies);
 
 int send_nl(struct netlink *nl, struct nl_msg * msg);
 

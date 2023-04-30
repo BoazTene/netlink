@@ -19,6 +19,7 @@
 #include <Python.h>
 #include "netlink_class.h"
 #include "message.h"
+#include "argument_policy.h"
 
 static struct PyModuleDef netlink = {
     PyModuleDef_HEAD_INIT, "netlink", /* name of module */
@@ -32,6 +33,10 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   PyObject *module;
 
   if (PyType_Ready(&NetLinkType) < 0) {
+	      return NULL;
+  }
+
+  if (PyType_Ready(&ArgumentPolicyType) < 0) {
 	      return NULL;
   }
 
@@ -50,6 +55,9 @@ PyMODINIT_FUNC PyInit_netlink(void) {
 
   Py_INCREF(&MessageType);
   PyModule_AddObject(module, "Message", (PyObject *) &MessageType);
+
+  Py_INCREF(&ArgumentPolicyType);
+  PyModule_AddObject(module, "ArgumentPolicy", (PyObject *) &ArgumentPolicyType);
 
   return module;
 }

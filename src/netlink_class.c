@@ -79,18 +79,48 @@ static PyObject *NetLink_new(PyTypeObject *type, PyObject *args,
 static void NetLink_dealloc(NetLink *self) {
     if (self->netlink != NULL) {
         close_nl(self->netlink);
+        free(self->policies);
         free(self->netlink);
+    }
+
+    if (self->policies != NULL) {
+        free(self->policies);
     }
 
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
+static struct nla_policy * get_policies(ArgumentPolicy **policies, int policies_len) {
+    struct nla_policy nla_policies[policies_len];
+
+    for (int i = 0; i < policies_len; i++) {
+        nla_policies[i] = policies[i]->policy;
+    }
+
+    return  nla_policies;
+}
+
 static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
-    if (!PyArg_ParseTuple(args, "s", &self->family_name)) return;
+    ArgumentPolicy *policies;
+    if (!PyArg_ParseTuple(args, "sO!", &self->family_name, &ArgumentPolicyType, &policies)) return;
+
+    self->policies_len = PyList_Size(policies);
+    
+    self->policies = (ArgumentPolicy **) malloc(sizeof(ArgumentPolicy *) * self->policies_len); 
+
+    if (self->policies == NULL) {
+        return;
+    }
+
+    if (PyList_AsTuple(policies, self->policies) == -1) {
+        return;
+    }
 
     self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
 
-    self->netlink = initialize_netlink(self->netlink, self->family_name);
+    struct nla_policy *  nla_policies = get_policies(self->policies, self->policies_len);
+
+    self->netlink = initialize_netlink(self->netlink, self->family_name, nla_policies);
 
     if (!self->netlink->sock) {
         PyErr_SetString(PyExc_ConnectionRefusedError,

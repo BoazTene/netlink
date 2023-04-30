@@ -27,17 +27,34 @@ int create_socket();
  * @param nl allocated buffer.
  * @param magic_number the magic protocol (same in kernel).
  */
-struct netlink *initialize_netlink(struct netlink *nl, char *family_name) {
+struct netlink *initialize_netlink(struct netlink *nl, char *family_name, struct nla_policy *policies, int policies_len) {
 
     nl->sock = (struct nl_sock *)nl_socket_alloc();
 
     nl->pid = getpid();
     nl->protocol = NETLINK_GENERIC;
     nl_connect(nl->sock, nl->protocol);
-    
     nl->family_id = genl_ctrl_resolve(nl->sock, family_name);
+    nl->policies = malloc(sizeof(struct nla_policy) * policies_len);
+    memcpy(nl->policies, policies, sizeof(struct nla_policy) *policies_len);
+    nl->policies_len = policies_len;
+
+    nl_socket_modify_cb(nl->sock, NL_CB_VALID, NL_CB_CUSTOM, recv_valid_message, nl);
 
     return nl;
+}
+
+int recv_valid_message(struct nl_msg *msg, struct netlink *nl) {
+    struct nlattr* attrs[nl->policies_len+1];
+    struct nlmsghdr *nlh = nlmsg_hdr(msg);
+
+    if (nlmsg_parse(nlh, 0, attrs, nl->policies_len, nl->policies) < 0) {
+        printf("Error parsing message\n");
+        return -1;
+    }
+
+    printf("Parsing success\n"); 
+    return 0;
 }
 
 int send_nl(struct netlink *nl, struct nl_msg *msg) {
@@ -60,7 +77,7 @@ int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags)
         return -1;
     }
 
-    int ret = nl_recvmsgs(nl->sock, msg);
+    int ret = nl_recvmsgs_default(nl->sock, msg);
     if (ret < 0) {
         fprintf(stderr, "Error: Failed to receive netlink message\n");
         nlmsg_free(msg);
