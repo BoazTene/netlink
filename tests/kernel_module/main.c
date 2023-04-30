@@ -145,9 +145,45 @@ int family1_recv(struct sk_buff *skb_temp, struct genl_info *info) {
         printk("no info->attrs %i\n", FAMILY1_A_MSG);
     }
 
+    skb = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
+    if (skb == NULL) {
+        goto out;
+    }
+
+    //Create the message headers
+    /* arguments of genlmsg_put: 
+       struct sk_buff *, 
+       int (sending) pid, 
+       int sequence number, 
+       struct genl_family *, 
+       int flags, 
+       u8 command index (why do we need this?)
+    */
+    msg_head = genlmsg_put(skb, 0, info->snd_seq+1, &family1_gnl_family, 0, FAMILY_C_RECV);
+    if (msg_head == NULL) {
+        rc = -ENOMEM;
+        goto out;
+    }
+    //Add a FAMILY1_A_MSG attribute (actual value to be sent)
+    rc = nla_put_string(skb, FAMILY1_A_MSG, "Reply from family 2");
+    if (rc != 0) {
+        goto out;
+    }
     
-  
+    //Finalize the message
+    genlmsg_end(skb, msg_head);
+
+    //Send the message back
+    rc = genlmsg_unicast(genl_info_net(info), skb, info->snd_portid );
+    if (rc != 0) {
+        goto out;
+    }
+
     return 0;
+    out:
+    printk("An error occured in family 2 receive:\n");
+    return 0;
+
 }
 /**
  * Callback for hadnling family2 data reception
