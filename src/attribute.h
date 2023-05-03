@@ -15,32 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#ifndef ARGUMENT_POLICY_H
-#define ARGUMENT_POLICY_H
 #include "Python.h"
 #include <structmember.h>
-#include <netlink/netlink.h>
-#include <netlink/genl/genl.h>
-#include <netlink/msg.h>
-#include <netlink/attr.h>
-#include <netlink/socket.h>
-#include <netlink/genl/genl.h>
-#include <netlink/genl/ctrl.h>
-#include <netlink/route/addr.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-
+#include "netlink.h"
 
 /**
  * Represents NetLink class.
  */
 typedef struct {
     PyObject_HEAD
-    struct nla_policy policy;
-} ArgumentPolicy; 
+    unsigned char *data;
+    int len;
+    int type;
+} Attribute; 
 
-extern PyTypeObject ArgumentPolicyType;
+extern PyTypeObject AttributeType;
 
-#endif
+

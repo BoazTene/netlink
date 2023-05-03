@@ -1,6 +1,6 @@
-obj-m += test_k.o
+obj-m += netlink_example.o
 
-test_k-objs := main.o
+netlink_example-objs := main.o
 
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
@@ -14,14 +14,14 @@ clean:
 ifneq ($(KERNELRELEASE),)
 # We were called by kbuild
 
-ifneq ($(strip $(firewall-objs)),)
-obj-m += firewall.o
+ifneq ($(strip $(netlink_example-objs)),)
+obj-m += netlink_example.o
 endif
 
 else
 # We were called from command line
 
-ifneq ($(strip $(firewall-objs)),)
+ifneq ($(strip $(netlink_example-objs)),)
 all:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 else

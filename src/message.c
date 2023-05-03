@@ -17,6 +17,17 @@ static PyObject * message_reserve(Message *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+static PyObject * get_message(Message *self, PyObject *args) {
+	struct nlmsghdr *nlh = nlmsg_hdr(self->msg);
+	int data_len = nlmsg_datalen(nlh);
+	
+	int message_len = NLMSG_LENGTH(nlh->nlmsg_len);
+
+	PyObject * message_bytes = PyBytes_FromStringAndSize(nlh, message_len);
+
+	return message_bytes;
+} 
+
 #define append_docs "Append data to tail of a netlink message\n@param data data to add\n@param len length of data\n@param pad Number of bytes to align data to"
 				 
 
@@ -39,7 +50,6 @@ static PyObject * message_append(Message *self, PyObject *args) {
 
 #define nla_put_docs "Add a unspecific attribute to netlink message.\n@param attribute_type Attribute type.\n@param data Pointer to data to be used as attribute payload."
 
-
 static PyObject * message_nla_put(Message *self, PyObject *args) {
     Py_buffer buffer;
     int attribute_type;
@@ -54,6 +64,41 @@ static PyObject * message_nla_put(Message *self, PyObject *args) {
 
     Py_RETURN_NONE;
 }
+
+static PyObject *message_from_bytes(PyObject *cls,  PyObject *args) {
+	Py_buffer buffer;
+
+	if (!PyArg_ParseTuple(args, "y*", &buffer)) {
+		return NULL;
+	}
+	
+	Message * message = PyObject_New(Message, &MessageType);
+	message->msg = nlmsg_alloc();
+	void *data = nlmsg_put(message->msg, NL_AUTO_PORT, NL_AUTO_SEQ, NLMSG_NOOP, buffer.len, 0);
+	memcpy(data, buffer.buf, buffer.len);
+
+	PyBuffer_Release(&buffer);
+
+	return message;
+}
+
+static PyObject *parse_header(Message *self,  PyObject *args) {
+	struct nlmsghdr* nlh = nlmsg_hdr(self->msg);
+
+	int len, type, flags, seq, pid;
+
+	len = nlh->nlmsg_len;
+	type = nlh->nlmsg_type;
+	flags = nlh->nlmsg_flags;
+	seq = nlh->nlmsg_seq;
+	pid = nlh->nlmsg_pid;
+
+	PyObject* result = Py_BuildValue("(iiiii)", len, type, flags, seq, pid);
+
+	return result;
+}
+
+
 
 static PyObject *Message_new(PyTypeObject *type, PyObject *args,
                              PyObject *kwds) {
@@ -74,23 +119,23 @@ static void Message_dealloc(Message *self) {
 
 static void Message_init(Message *self, PyObject *args, PyObject *kwds) {
     int family_id;
-    int flags;
     int hdrlen;
-    int cmd;
-    int version;
+    int flags;
+    
+    if (PyArg_ParseTuple(args, "iii", &family_id, &hdrlen, &flags)) {
+	    self->msg = nlmsg_alloc();
 
-    if (!PyArg_ParseTuple(args, "iiiii", &family_id, &hdrlen, &flags, &cmd, &version)) return;
+	    if (!self->msg) {
+	       PyErr_SetString(PyExc_ConnectionRefusedError, "Can't allocate memory");
+	       return;
+	    } 
 
-    self->msg = nlmsg_alloc();
-
-    if (!self->msg) {
-       PyErr_SetString(PyExc_ConnectionRefusedError, "Can't allocate memory");
-       return;
-    } 
-
-    if (!genlmsg_put(self->msg, NL_AUTO_PORT, NL_AUTO_SEQ, family_id, hdrlen, flags, cmd, version)) {
-        nlmsg_free(self->msg);
-        return;
+	    if (!nlmsg_put(self->msg, NL_AUTO_PORT, NL_AUTO_SEQ, family_id, hdrlen, flags)) {
+		nlmsg_free(self->msg);
+		return;
+	    }
+    } else {
+	    return NULL;
     }
 }
 
@@ -103,6 +148,9 @@ static PyMethodDef Message_methods[] = {
     {"reserve", message_reserve, METH_VARARGS, reserve_docs},
     {"append", message_append, METH_VARARGS, append_docs},
     {"nla_put", message_nla_put, METH_VARARGS, nla_put_docs},
+    {"get_bytes", get_message, METH_VARARGS, "Returns the message in bytes"}, 
+    {"parse_header", parse_header, METH_VARARGS, "Parses the header of the message"},
+    {"from_bytes", message_from_bytes, METH_VARARGS | METH_CLASS, "Returns message from bytes"},
     {NULL} /* Sentinel */
 };
 
@@ -125,7 +173,7 @@ PyTypeObject MessageType = {
     0,                                                /* tp_getattro */
     0,                                                /* tp_setattro */
     0,                                                /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                               /* tp_flags */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,                               /* tp_flags */
     "Client implmentation of the netlink kenrel interface.", /* tp_doc */
     0,                                                       /* tp_traverse */
     0,                                                       /* tp_clear */

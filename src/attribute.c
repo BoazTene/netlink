@@ -1,49 +1,52 @@
-#include "argument_policy.h"
+#include "attribute.h"
 
-static PyObject *ArgumentPolicy_new(PyTypeObject *type, PyObject *args,
+static PyObject *Attribute_new(PyTypeObject *type, PyObject *args,
                              PyObject *kwds) {
-    ArgumentPolicy *self;
+    Attribute *self;
 
-    self = (ArgumentPolicy *)type->tp_alloc(type, 0);
+    self = (Attribute *)type->tp_alloc(type, 0);
 
     return (PyObject *)self;
 }
 
-static void ArgumentPolicy_dealloc(ArgumentPolicy *self) {
+static void Attribute_dealloc(Attribute *self) {
+	if (self->data != NULL) {
+		free(self->data);
+	}
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static void ArgumentPolicy_init(ArgumentPolicy *self, PyObject *args, PyObject *kwds) {
-    static char *kwlist[] = {"type", "minlen", "maxlen"};
+static void Attribute_init(Attribute *self, PyObject *args, PyObject *kwds) {
+    Py_buffer data;
+    int len;
     int type;
-    int minlen;
-    int maxlen;
+    if (!PyArg_ParseTuple(args, "y*ii", &data, &len, &type)) return;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "iii", kwlist, &type, &minlen, &maxlen)) return;
+    self->data = (unsigned char *) malloc(data.len);
+    memcpy(self->data, data.buf, data.len);
+    self->len = len;
+    self->type = type;
 
-    self->policy = (struct nla_policy) {
-        .type = type,
-        .minlen = minlen,
-        .maxlen = maxlen,
-    };
+    PyBuffer_Release(&data);
+    return;
 }
 
-static PyMemberDef ArgumentPolicy_members[] = {
-    {"type", T_INT, offsetof(ArgumentPolicy, policy.type), 0, "Type of the argument."},
-    {"minlen", T_INT, offsetof(ArgumentPolicy, policy.minlen), 0, "Minimum length of the argument."},
-    {"maxlen", T_INT, offsetof(ArgumentPolicy, policy.maxlen), 0, "Maximum length of the argument."},
+static PyMemberDef Attribute_members[] = {
+    {"len", T_INT, offsetof(Attribute, len), 0, "The netlink."},
+    {"type", T_INT, offsetof(Attribute, type), 0, "The netlink."},
+    {"data", T_STRING, offsetof(Attribute, data), 0, "The netlink."},
     {NULL} /* Sentinel */
 };
 
-static PyMethodDef ArgumentPolicy_methods[] = {
-        {NULL} /* Sentinel */
+static PyMethodDef Attribute_methods[] = {
+       {NULL} /* Sentinel */
 };
 
-PyTypeObject ArgumentPolicyType = {
-    PyVarObject_HEAD_INIT(NULL, 0) "netlink.ArgumentPolicy", /* tp_name */
-    sizeof(ArgumentPolicy),                                  /* tp_basicsize */
+PyTypeObject AttributeType = {
+    PyVarObject_HEAD_INIT(NULL, 0) "netlink.Attribute", /* tp_name */
+    sizeof(Attribute),                                  /* tp_basicsize */
     0,                                                /* tp_itemsize */
-    (destructor)ArgumentPolicy_dealloc,                      /* tp_dealloc */
+    (destructor)Attribute_dealloc,                      /* tp_dealloc */
     0,                                                /* tp_print */
     0,                                                /* tp_getattr */
     0,                                                /* tp_setattr */
@@ -66,15 +69,15 @@ PyTypeObject ArgumentPolicyType = {
     0,                      /* tp_weaklistoffset */
     0,                      /* tp_iter */
     0,                      /* tp_iternext */
-    ArgumentPolicy_methods,        /* tp_methods */
-    ArgumentPolicy_members,        /* tp_members */
+    Attribute_methods,        /* tp_methods */
+    Attribute_members,        /* tp_members */
     0,                      /* tp_getset */
     0,                      /* tp_base */
     0,                      /* tp_dict */
     0,                      /* tp_descr_get */
     0,                      /* tp_descr_set */
     0,                      /* tp_dictoffset */
-    (initproc)ArgumentPolicy_init, /* tp_init */
+    (initproc)Attribute_init, /* tp_init */
     0,                      /* tp_alloc */
-    ArgumentPolicy_new,            /* tp_new */
+    Attribute_new,            /* tp_new */
 };

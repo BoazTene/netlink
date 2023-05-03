@@ -17,9 +17,11 @@
  */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "argument_policy.h"
 #include "netlink_class.h"
 #include "message.h"
-#include "argument_policy.h"
+#include "enums.h";
+#include "attribute.h";
 
 static struct PyModuleDef netlink = {
     PyModuleDef_HEAD_INIT, "netlink", /* name of module */
@@ -32,8 +34,15 @@ static struct PyModuleDef netlink = {
 PyMODINIT_FUNC PyInit_netlink(void) {
   PyObject *module;
 
-  if (PyType_Ready(&NetLinkType) < 0) {
+  if (PyType_Ready(&CBTypeType) < 0) {
+  	return NULL;
+  }
+
+  if (PyType_Ready(&CBKindType) < 0) {
 	      return NULL;
+  }
+  if (PyType_Ready(&NetLinkType) < 0) {
+  	return NULL;
   }
 
   if (PyType_Ready(&ArgumentPolicyType) < 0) {
@@ -41,6 +50,10 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   }
 
   if (PyType_Ready(&MessageType) < 0) {
+      return NULL;
+  }
+
+  if (PyType_Ready(&AttributeType) < 0) {
       return NULL;
   }
 
@@ -56,8 +69,22 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   Py_INCREF(&MessageType);
   PyModule_AddObject(module, "Message", (PyObject *) &MessageType);
 
+  Py_INCREF(&AttributeType);
+  PyModule_AddObject(module, "Attribute", (PyObject *) &AttributeType);
+
+
+  Py_INCREF(&CBTypeType);
+  PyModule_AddObject(module, "CB_Type", (PyObject *) &CBTypeType);
+
+  Py_INCREF(&CBKindType);
+  PyModule_AddObject(module, "CB_Kind", (PyObject *) &CBKindType);
+
   Py_INCREF(&ArgumentPolicyType);
   PyModule_AddObject(module, "ArgumentPolicy", (PyObject *) &ArgumentPolicyType);
+
+  PyDict_SetItemString(NetLinkType.tp_dict, "HEADER_LEN", PyLong_FromLong(16));
+
+  initialize_enums();
 
   return module;
 }

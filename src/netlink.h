@@ -15,8 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#ifndef NETLINK_H
-#define NETLINK_H
+#include "argument_policy.h"
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/msg.h>
@@ -32,22 +31,33 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+
+#ifndef NETLINK_H
+#define NETLINK_H
 #define MAX_PAYLOAD 8692
 
 struct netlink {
     struct nl_sock *sock;
+    int hdrlen;
     int family_id;
     int protocol;
     int policies_len;
     struct nla_policy *policies;
-    int pid;
 };
 
-struct netlink * initialize_netlink(struct netlink *nl, char *family_name, struct nla_policy *policies);
+struct netlink * initialize_netlink(struct netlink *nl, int protocol, int family_id, struct nla_policy *policies, int policies_len, int hdrlen);
 
 int send_nl(struct netlink *nl, struct nl_msg * msg);
 
-int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags);
+int recv_nl(struct netlink *nl);
+
+void parse_attr_nl(struct netlink *nl, struct nl_msg *msg, struct nlattr ** attrs);
+
+void modify_cb(struct netlink *nl, enum nl_cb_type type, enum nl_cb_kind kind, void *callback, void * arg);
+
+int add_membership_nl(struct netlink *nl, int group);
+
+int drop_membership_nl(struct netlink *nl, int group);
 
 void close_nl(struct netlink *nl);
 #endif

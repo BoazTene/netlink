@@ -25,10 +25,7 @@
  */
 typedef struct {
     PyObject_HEAD
-    char *family_name;
     struct netlink *netlink;
-    int policies_len;
-    ArgumentPolicy **policies;
 } NetLink; 
 
 extern PyTypeObject NetLinkType;

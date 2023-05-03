@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "netlink.h"
+#include <netlink/socket.h>
 
 #include <errno.h>
 
@@ -27,34 +28,61 @@ int create_socket();
  * @param nl allocated buffer.
  * @param magic_number the magic protocol (same in kernel).
  */
-struct netlink *initialize_netlink(struct netlink *nl, char *family_name, struct nla_policy *policies, int policies_len) {
-
+struct netlink *initialize_netlink(struct netlink *nl, int protocol, int family_id, struct nla_policy *policies, int policies_len, int hdrlen) {
+    
     nl->sock = (struct nl_sock *)nl_socket_alloc();
 
-    nl->pid = getpid();
-    nl->protocol = NETLINK_GENERIC;
-    nl_connect(nl->sock, nl->protocol);
-    nl->family_id = genl_ctrl_resolve(nl->sock, family_name);
-    nl->policies = malloc(sizeof(struct nla_policy) * policies_len);
-    memcpy(nl->policies, policies, sizeof(struct nla_policy) *policies_len);
+    nl->hdrlen = hdrlen;
+    nl->protocol = protocol;
+    nl->family_id = family_id;
     nl->policies_len = policies_len;
+    nl->policies = policies;
 
-    nl_socket_modify_cb(nl->sock, NL_CB_VALID, NL_CB_CUSTOM, recv_valid_message, nl);
+    nl_connect(nl->sock, nl->protocol);
 
     return nl;
 }
 
-int recv_valid_message(struct nl_msg *msg, struct netlink *nl) {
-    struct nlattr* attrs[nl->policies_len+1];
+/**
+ * Resolves a family id from the family_name.
+ * 
+ * !Note Only for generic netlink ofcourse.
+ *
+ * @param family_name The family name to resolve.
+ * @returns the family id.
+ */
+int resolve_genl_family_id(char* family_name) {
+	int family_id;
+	struct nl_sock * sock = nl_socket_alloc();
+	if (!sock) return -1;
+
+	nl_connect(sock, NETLINK_GENERIC);
+	family_id = genl_ctrl_resolve(sock, family_name);
+
+	nl_socket_free(sock);
+
+	return family_id;
+}
+
+void modify_cb(struct netlink *nl, enum nl_cb_type type, enum nl_cb_kind kind, void *callback, void * arg) {
+	nl_socket_modify_cb(nl->sock, NL_CB_VALID, NL_CB_CUSTOM, callback, arg);
+}
+
+void parse_attr_nl(struct netlink *nl, struct nl_msg *msg, struct nlattr **attrs) {
     struct nlmsghdr *nlh = nlmsg_hdr(msg);
-
-    if (nlmsg_parse(nlh, 0, attrs, nl->policies_len, nl->policies) < 0) {
+     
+    if (nlmsg_parse(nlh, nl->hdrlen, attrs, nl->policies_len, nl->policies) < 0) {
         printf("Error parsing message\n");
-        return -1;
+        return NULL;
     }
+}
 
-    printf("Parsing success\n"); 
-    return 0;
+int add_membership_nl(struct netlink *nl, int group) {
+	return nl_socket_add_memberships(nl->sock, group, 0);
+}
+
+int drop_membership_nl(struct netlink *nl, int group) {
+	return nl_socket_drop_memberships(nl->sock, group, 0);
 }
 
 int send_nl(struct netlink *nl, struct nl_msg *msg) {
@@ -66,40 +94,20 @@ int send_nl(struct netlink *nl, struct nl_msg *msg) {
     return ret;
 }
 
-int recv_nl(struct netlink *nl, char *buf, int buffer_size, int flags)
+int recv_nl(struct netlink *nl)
 {
-    struct nlmsghdr *nlh;
-    struct nl_msg *msg;
+    struct sockaddr_nl nla = {0}; // talking to kernel.
+    struct nl_sock * sock = (struct nl_sock *)nl->sock;
+        
+    int ret = nl_recvmsgs_default(nl->sock);
 
-    msg = nlmsg_alloc();
-    if (!msg) {
-        fprintf(stderr, "Error: Failed to allocated memory for msg\n");
-        return -1;
-    }
-
-    int ret = nl_recvmsgs_default(nl->sock, msg);
     if (ret < 0) {
-        fprintf(stderr, "Error: Failed to receive netlink message\n");
-        nlmsg_free(msg);
+	        printf("Failed to receive netlink message: %s\n", nl_geterror(ret));
+        fprintf(stderr, "Error: Failed to receive netlink message %d\n", ret);
         return -1;
     }
 
-    nlh = nlmsg_hdr(msg);
-
-    if (nlh->nlmsg_type == NLMSG_ERROR) {
-        fprintf(stderr, "Error: received Netlink error message\n");
-        nlmsg_free(msg);
-        return -1;
-    }
-
-    if (nlh->nlmsg_len > sizeof(struct nlmsghdr)) {
-        memcpy(buf, NLMSG_DATA(nlh), buffer_size);
-    }
-
-
-    nlmsg_free(msg);
-
-    return 0;
+    return ret;
 }
 
 void close_nl(struct netlink *nl) { 

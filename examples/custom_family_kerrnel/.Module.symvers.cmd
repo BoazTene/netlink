@@ -1,0 +1,1 @@
+savedcmd_/home/boaz/netlink/examples/kernel_module/Module.symvers :=  scripts/mod/modpost -m -a     -o /home/boaz/netlink/examples/kernel_module/Module.symvers -T /home/boaz/netlink/examples/kernel_module/modules.order -i Module.symvers -e 
