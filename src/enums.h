@@ -1,25 +1,40 @@
+/*
+    Python client for the Netlink interface.
+    Copyright (C) 2023 Boaz Tene
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/*
+ * This file exports enums to the module.
+ *
+ * The enum would like this in python:
+ *
+ * class SomeEnum:
+ * 	SOME_VALUE = 1
+ */
+
 #ifndef ENUMS_H
 #define ENUMS_H
+
 #include <Python.h>
 #include "netlink.h"
-
+#include "attribute.h"
 
 typedef struct {
 	PyObject_HEAD
 } CB_TYPE;
-
-static PyObject *cb_type_getattr(CB_TYPE *self, PyObject *name) {
-    if (PyUnicode_CompareWithASCIIString(name, "CB_VALID") == 0) {
-        return PyLong_FromLong(NL_CB_VALID);
-    } else if (PyUnicode_CompareWithASCIIString(name, "CB_FINISH") == 0) {
-        return PyLong_FromLong(NL_CB_FINISH);
-    } else if (PyUnicode_CompareWithASCIIString(name, "CB_OVERRUN") == 0) {
-        return PyLong_FromLong(NL_CB_OVERRUN);
-    } else {
-        // Fall back to default behavior for other attribute accesses
-        return PyObject_GenericGetAttr(self, name);
-    }
-}
 
 PyTypeObject CBTypeType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -28,15 +43,11 @@ PyTypeObject CBTypeType = {
     .tp_itemsize = 0,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = PyType_GenericNew,
-    .tp_getattr = cb_type_getattr
 };
-
-
 
 typedef struct {
 	PyObject_HEAD
 } CB_KIND;
-
 
 PyTypeObject CBKindType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -47,6 +58,9 @@ PyTypeObject CBKindType = {
     .tp_new = PyType_GenericNew,
 };
 
+/**
+ * Initializes the enums, should be callled on the initializatino of the module.  *
+ */
 void initialize_enums() {
 	PyDict_SetItemString(CBTypeType.tp_dict, "CB_VALID", PyLong_FromLong(NL_CB_VALID));
 	PyDict_SetItemString(CBTypeType.tp_dict, "CB_INVALID", PyLong_FromLong(NL_CB_INVALID));

@@ -15,8 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#ifndef ARGUMENT_POLICY_H
-#define ARGUMENT_POLICY_H
+
+#ifndef ATTRIBUTE_POLICY_H
+#define ATTRIBUTE_POLICY_H
+
 #include "Python.h"
 #include <structmember.h>
 #include <netlink/netlink.h>
@@ -39,8 +41,8 @@
 typedef struct {
     PyObject_HEAD
     struct nla_policy policy;
-} ArgumentPolicy; 
+} AttributePolicy; 
 
-extern PyTypeObject ArgumentPolicyType;
+extern PyTypeObject AttributePolicyType;
 
 #endif

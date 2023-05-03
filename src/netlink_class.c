@@ -15,12 +15,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 #include "netlink_class.h"
 #include "message.h"
 #include "attribute.h"
-#include "argument_policy.h"
-
+#include "attribute_policy.h"
 #include <Python.h>
+
+#define resolve_genl_family_id_docs "A static method that resolve the family id of an generic netlink.\n@param family_name The family name\n@return The family id"
 
 static PyObject *netlink_resolve_genl_family_id(PyObject *cls, PyObject *args) {
 	char *family_name;
@@ -34,6 +36,8 @@ static PyObject *netlink_resolve_genl_family_id(PyObject *cls, PyObject *args) {
 	return PyLong_FromLong(family_id);
 }
 
+#define send_docs "Sends a message.\n@param message The message to send"
+
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
     Message *message;
 
@@ -45,6 +49,8 @@ static PyObject *netlink_send(NetLink *self, PyObject *args) {
 
     Py_RETURN_NONE;
 }
+
+#define parse_docs "Parses message's attributes.\n@param message message to parse\n@return list of attributes (list[Attribute])."
 
 static PyObject *netlink_parse(NetLink *self, PyObject *args) {
     Message *message;
@@ -68,33 +74,44 @@ static PyObject *netlink_parse(NetLink *self, PyObject *args) {
 	    attribute->data = nla_data(attrs[i]);
 	    attribute->type = nla_type(attrs[i]);
 
-            PyList_Append(attribute_list, attribute);
+            PyList_Append(attribute_list, (PyObject *) attribute);
     }
 
     return attribute_list;
 }
 
+#define get_family_id_docs "Getter for the family id.\n@return the family id"
+
 static PyObject *netlink_get_family_id(NetLink *self, PyObject *args) {
 	return PyLong_FromLong(self->netlink->family_id);
 }
 
+/**
+ * Callback handler.
+ * Used as a middle man between the cb and the python.
+ *
+ * @param msg The recieved msg.
+ * @param callback The callback to call.
+ * @return error code.
+ */
 static int * cb_callback_handler(struct nl_msg *msg, PyObject *callback) {
 	PyGILState_STATE gstate;
 	gstate = PyGILState_Ensure();
 	PyObject *arglist;
-	PyObject *result;
 
 	Message *message = PyObject_New(Message, &MessageType);
 	message->msg = msg;
 	arglist = PyTuple_Pack(1, message);
 	
-	result = PyObject_CallObject(callback, arglist);
+	PyObject_CallObject(callback, arglist);
 	
 	Py_DECREF(arglist);
 	PyGILState_Release(gstate);
 
 	return 0;
 }
+
+#define modify_cb_docs "Modifies the cb of the netlink.\n@param kind kind of the object (CB_Kind).\n@param type type of the object (CB_Type)\n@param callback The callback to set"
 
 static PyObject *netlink_modify_cb(NetLink *self, PyObject *args) {
     PyObject *callback;
@@ -116,6 +133,8 @@ static PyObject *netlink_modify_cb(NetLink *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+#define add_membership_docs "Adds a membership to a multicast group.\n@param group multicast group."
+
 static PyObject *netlink_add_membership(NetLink *self, PyObject *args) {
     int group;
 
@@ -127,6 +146,8 @@ static PyObject *netlink_add_membership(NetLink *self, PyObject *args) {
     
     Py_RETURN_NONE;
 }
+
+#define drop_membership_docs "Drops membership to a multicast group.\n@param group multicast group."
 
 static PyObject *netlink_drop_membership(NetLink *self, PyObject *args) {
     int group;
@@ -140,6 +161,7 @@ static PyObject *netlink_drop_membership(NetLink *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+#define recv_docs "Receives a message.\nThe appropriate cb will be called."
 
 static PyObject *netlink_recv(NetLink *self, PyObject *args) {
     int ret = recv_nl(self->netlink);
@@ -150,6 +172,8 @@ static PyObject *netlink_recv(NetLink *self, PyObject *args) {
 
     Py_RETURN_NONE;
 }
+
+#define close_docs "Closes netlink connection.\n"
 
 static PyObject *netlink_close(NetLink *self, PyObject *args) {
     if (self->netlink != NULL) {
@@ -179,8 +203,8 @@ static void NetLink_dealloc(NetLink *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static struct nla_policy * get_policies(ArgumentPolicy **policies, int policies_len) {
-    struct nla_policy nla_policies[policies_len];
+static struct nla_policy * get_policies(AttributePolicy **policies, int policies_len) {
+    struct nla_policy* nla_policies = malloc(sizeof(struct nla_policy) * policies_len);
 
     for (int i = 0; i < policies_len; i++) {
         nla_policies[i] = policies[i]->policy;
@@ -198,12 +222,12 @@ static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
     if (!PyArg_ParseTuple(args, "iiiO", &family_id, &protocol, &hdrlen, &policies_list)) return;
 
     if (!PyList_Check(policies_list)) {
-	    PyErr_SetString(PyExc_TypeError, "Argument must be a list");
+	    PyErr_SetString(PyExc_TypeError, "Attribute must be a list");
 	    return;
     }
 
     int policies_len = PyList_Size(policies_list);
-    ArgumentPolicy ** policies = (ArgumentPolicy **) malloc(sizeof(ArgumentPolicy *) * policies_len); 
+    AttributePolicy ** policies = (AttributePolicy **) malloc(sizeof(AttributePolicy *) * policies_len); 
 
     if (policies == NULL) {
         return;
@@ -212,13 +236,13 @@ static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
     for (int i = 0; i < policies_len; i++) {
 	    PyObject *item = PyList_GetItem(policies_list, i);
 
-	    if (!PyObject_IsInstance(item, &ArgumentPolicyType)) {
-		    PyErr_SetString(PyExc_TypeError, "List must contain ArgumentPolicy");
+	    if (!PyObject_IsInstance(item, (PyObject *) &AttributePolicyType)) {
+		    PyErr_SetString(PyExc_TypeError, "List must contain AttributePolicy");
 		    Py_DECREF(item);
 		    return;
 	    }
 
-	    policies[i] = (ArgumentPolicy *) item; 
+	    policies[i] = (AttributePolicy *) item; 
     }
 
     self->netlink = (struct netlink *)malloc(sizeof(struct netlink));
@@ -226,6 +250,8 @@ static void NetLink_init(NetLink *self, PyObject *args, PyObject *kwds) {
     struct nla_policy *  nla_policies = get_policies(policies, policies_len);
 
     self->netlink = initialize_netlink(self->netlink, protocol, family_id, nla_policies, policies_len, hdrlen);
+
+    free(nla_policies);
 
     if (!self->netlink->sock) {
         PyErr_SetString(PyExc_ConnectionRefusedError,
@@ -239,16 +265,16 @@ static PyMemberDef NetLink_members[] = {
 };
 
 static PyMethodDef NetLink_methods[] = {
-    {"send", netlink_send, METH_VARARGS, "Send method"},
-    {"recv", netlink_recv, METH_VARARGS, "Recv method"},
-    {"get_family_id", netlink_get_family_id, METH_VARARGS, "Gets the family id.\n@return the family id"},
-    {"close", (PyCFunction)netlink_close, METH_VARARGS,
-     "closes the connection."},
-    {"modify_cb", netlink_modify_cb, METH_VARARGS, "modifies the callbacks"},
-    {"parse_message_attributes", netlink_parse, METH_VARARGS, "parses a message"},
-    {"resolve_genl_family_id", netlink_resolve_genl_family_id, METH_VARARGS | METH_CLASS, "Resolves family id from a generic netlink family name."},
-    {"add_membership", netlink_add_membership, METH_VARARGS, "Adds a memebership to multicast group"},
-    {"drop_membership", netlink_drop_membership, METH_VARARGS, "Drops a membership to multicast graoup"},
+    {"send", (PyCFunction) netlink_send, METH_VARARGS, send_docs},
+    {"recv", (PyCFunction) netlink_recv, METH_VARARGS, recv_docs},
+    {"get_family_id", (PyCFunction)netlink_get_family_id, METH_VARARGS, get_family_id_docs},
+    {"close", (PyCFunction) netlink_close, METH_VARARGS,
+     close_docs},
+    {"modify_cb", (PyCFunction) netlink_modify_cb, METH_VARARGS, modify_cb_docs},
+    {"parse_message_attributes", (PyCFunction) netlink_parse, METH_VARARGS, parse_docs},
+    {"resolve_genl_family_id", (PyCFunction) netlink_resolve_genl_family_id, METH_VARARGS | METH_CLASS, resolve_genl_family_id_docs},
+    {"add_membership", (PyCFunction) netlink_add_membership, METH_VARARGS, add_membership_docs},
+    {"drop_membership", (PyCFunction) netlink_drop_membership, METH_VARARGS, drop_membership_docs},
     {NULL} /* Sentinel */
 };
 

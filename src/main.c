@@ -17,11 +17,11 @@
  */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "argument_policy.h"
+#include "attribute_policy.h"
 #include "netlink_class.h"
 #include "message.h"
-#include "enums.h";
-#include "attribute.h";
+#include "enums.h"
+#include "attribute.h"
 
 static struct PyModuleDef netlink = {
     PyModuleDef_HEAD_INIT, "netlink", /* name of module */
@@ -45,7 +45,7 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   	return NULL;
   }
 
-  if (PyType_Ready(&ArgumentPolicyType) < 0) {
+  if (PyType_Ready(&AttributePolicyType) < 0) {
 	      return NULL;
   }
 
@@ -79,8 +79,8 @@ PyMODINIT_FUNC PyInit_netlink(void) {
   Py_INCREF(&CBKindType);
   PyModule_AddObject(module, "CB_Kind", (PyObject *) &CBKindType);
 
-  Py_INCREF(&ArgumentPolicyType);
-  PyModule_AddObject(module, "ArgumentPolicy", (PyObject *) &ArgumentPolicyType);
+  Py_INCREF(&AttributePolicyType);
+  PyModule_AddObject(module, "AttributePolicy", (PyObject *) &AttributePolicyType);
 
   PyDict_SetItemString(NetLinkType.tp_dict, "HEADER_LEN", PyLong_FromLong(16));
 

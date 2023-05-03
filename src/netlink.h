@@ -15,7 +15,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "argument_policy.h"
+
+#ifndef NETLINK_H
+#define NETLINK_H
+
+#include "attribute_policy.h"
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/msg.h>
@@ -31,11 +35,18 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-
-#ifndef NETLINK_H
-#define NETLINK_H
 #define MAX_PAYLOAD 8692
 
+/**
+ * Represents a connection to a netlink family.
+ *
+ * sock -> The connected socket.
+ * hdrlen -> Size of the header length.
+ * family_id -> The family's unique id.
+ * protocol -> The protocol to use.
+ * policies_len -> The number of attributes.
+ * policies -> An array of the attribute's policies.
+ */
 struct netlink {
     struct nl_sock *sock;
     int hdrlen;
@@ -45,20 +56,88 @@ struct netlink {
     struct nla_policy *policies;
 };
 
+/**
+ * Creates a new netlink object.
+ *
+ * @param nl allocated buffer.
+ * @param protocol such as (NETLINK_GENERIC, NETLINK_ROUTE)
+ * @param family_id the family's identifier.
+ * @param policies attribute's policies of the family.
+ * @param policies_len number of policies.
+ */
 struct netlink * initialize_netlink(struct netlink *nl, int protocol, int family_id, struct nla_policy *policies, int policies_len, int hdrlen);
 
+/**
+ * Resolves a family id from the family_name.
+ * 
+ * !Note Only for generic netlink ofcourse.
+ *
+ * @param family_name The family name to resolve.
+ * @returns the family id.
+ */
+int resolve_genl_family_id(char* family_name);
+
+/**
+ * Sends a nl message.
+ *
+ * @param nl netlink object.
+ * @param msg message to send.
+ * @return return code, zero upon success
+ */
 int send_nl(struct netlink *nl, struct nl_msg * msg);
 
+/**
+ * Recieves a message.
+ *
+ * @param nl netlink object
+ * @return return code, zero upon success.
+ */
 int recv_nl(struct netlink *nl);
 
+/**
+ * Parses attributes from a message.
+ *
+ * @param nl netlink object.
+ * @param msg message to parse.
+ * @param attrs attributes array in length of 1+MAX_ATTRIBUTE, the parsed attributes will be put there.
+ */
 void parse_attr_nl(struct netlink *nl, struct nl_msg *msg, struct nlattr ** attrs);
 
+/**
+ * Modifies callbacks.
+ * Note that these callbacks will get called when a message arrives.
+ *
+ * @param nl netlink object.
+ * @param type callback's type.
+ * @param kind callback's kind.
+ * @param arg arguments to add when calling the callback.
+ */
 void modify_cb(struct netlink *nl, enum nl_cb_type type, enum nl_cb_kind kind, void *callback, void * arg);
 
+/**
+ * Adds a new memebership to a multicast group.
+ *
+ * @param nl netlink object.
+ * @param group multicast's group.
+ * @return return code zero upon success.
+ */
 int add_membership_nl(struct netlink *nl, int group);
 
+/**
+ * Drops a memebership from a multicast group.
+ *
+ * @param nl netlink object.
+ * @param group multicast group.
+ * @return return code, zero upon success.
+ */
 int drop_membership_nl(struct netlink *nl, int group);
 
+/**
+ * Closes netlink connection and frees the socket.
+ *
+ * @param nl netlink object.
+ */
 void close_nl(struct netlink *nl);
+
 #endif
 

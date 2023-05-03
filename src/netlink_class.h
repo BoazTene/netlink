@@ -15,10 +15,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+#ifndef NETLINK_CLASS_H
+#define NETLINK_CLASS_H
+
 #include "Python.h"
 #include <structmember.h>
 #include "netlink.h"
-#include "argument_policy.h"
+#include "attribute_policy.h"
 
 /**
  * Represents NetLink class.
@@ -30,5 +34,4 @@ typedef struct {
 
 extern PyTypeObject NetLinkType;
 
-
-
+#endif

@@ -1,3 +1,21 @@
+ /*
+    Python client for the Netlink interface.
+    Copyright (C) 2023 Boaz Tene
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+  
 #include "message.h"
 
 
@@ -17,19 +35,18 @@ static PyObject * message_reserve(Message *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
-static PyObject * get_message(Message *self, PyObject *args) {
+#define get_bytes_docs "@return message in bytes (headers + payload)"
+
+static PyObject * message_get_bytes(Message *self, PyObject *args) {
 	struct nlmsghdr *nlh = nlmsg_hdr(self->msg);
-	int data_len = nlmsg_datalen(nlh);
-	
 	int message_len = NLMSG_LENGTH(nlh->nlmsg_len);
 
-	PyObject * message_bytes = PyBytes_FromStringAndSize(nlh, message_len);
+	PyObject * message_bytes = PyBytes_FromStringAndSize((char *) nlh, message_len);
 
 	return message_bytes;
 } 
 
 #define append_docs "Append data to tail of a netlink message\n@param data data to add\n@param len length of data\n@param pad Number of bytes to align data to"
-				 
 
 static PyObject * message_append(Message *self, PyObject *args) {
     Py_buffer buffer;
@@ -65,6 +82,8 @@ static PyObject * message_nla_put(Message *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+#define from_bytes_docs "A static method that creates a message object from bytes.\n@param bytes A full message bytes (header+payload)\n@return A new Message"
+
 static PyObject *message_from_bytes(PyObject *cls,  PyObject *args) {
 	Py_buffer buffer;
 
@@ -79,10 +98,12 @@ static PyObject *message_from_bytes(PyObject *cls,  PyObject *args) {
 
 	PyBuffer_Release(&buffer);
 
-	return message;
+	return (PyObject *) message;
 }
 
-static PyObject *parse_header(Message *self,  PyObject *args) {
+#define parse_header_docs "Parses the message's header (base NetLink level).\n@return A tuple of [len, type, flags, seq, pid]"
+
+static PyObject *message_parse_header(Message *self,  PyObject *args) {
 	struct nlmsghdr* nlh = nlmsg_hdr(self->msg);
 
 	int len, type, flags, seq, pid;
@@ -97,8 +118,6 @@ static PyObject *parse_header(Message *self,  PyObject *args) {
 
 	return result;
 }
-
-
 
 static PyObject *Message_new(PyTypeObject *type, PyObject *args,
                              PyObject *kwds) {
@@ -117,6 +136,11 @@ static void Message_dealloc(Message *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
+/**
+ * @param family_id The family id.
+ * @param hdrlen Header length.
+ * @param flags flags.
+ */
 static void Message_init(Message *self, PyObject *args, PyObject *kwds) {
     int family_id;
     int hdrlen;
@@ -134,8 +158,6 @@ static void Message_init(Message *self, PyObject *args, PyObject *kwds) {
 		nlmsg_free(self->msg);
 		return;
 	    }
-    } else {
-	    return NULL;
     }
 }
 
@@ -145,12 +167,12 @@ static PyMemberDef Message_members[] = {
 };
 
 static PyMethodDef Message_methods[] = {
-    {"reserve", message_reserve, METH_VARARGS, reserve_docs},
-    {"append", message_append, METH_VARARGS, append_docs},
-    {"nla_put", message_nla_put, METH_VARARGS, nla_put_docs},
-    {"get_bytes", get_message, METH_VARARGS, "Returns the message in bytes"}, 
-    {"parse_header", parse_header, METH_VARARGS, "Parses the header of the message"},
-    {"from_bytes", message_from_bytes, METH_VARARGS | METH_CLASS, "Returns message from bytes"},
+    {"reserve", (PyCFunction) message_reserve, METH_VARARGS, reserve_docs},
+    {"append", (PyCFunction) message_append, METH_VARARGS, append_docs},
+    {"nla_put", (PyCFunction) message_nla_put, METH_VARARGS, nla_put_docs},
+    {"get_bytes", (PyCFunction) message_get_bytes, METH_VARARGS, get_bytes_docs}, 
+    {"message_parse_header", (PyCFunction) message_parse_header, METH_VARARGS, parse_header_docs},
+    {"from_bytes", (PyCFunction) message_from_bytes, METH_VARARGS | METH_CLASS, from_bytes_docs},
     {NULL} /* Sentinel */
 };
 
