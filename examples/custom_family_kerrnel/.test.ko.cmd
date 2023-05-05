@@ -1,1 +1,0 @@
-cmd_/home/boaz/netlink/tests/kernel_module/test.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/boaz/netlink/tests/kernel_module/test.ko /home/boaz/netlink/tests/kernel_module/test.o /home/boaz/netlink/tests/kernel_module/test.mod.o;  true

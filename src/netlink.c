@@ -37,7 +37,10 @@ struct netlink *initialize_netlink(struct netlink *nl, int protocol, int family_
     nl->protocol = protocol;
     nl->family_id = family_id;
     nl->policies_len = policies_len;
-    nl->policies = policies;
+    nl->policies = malloc(sizeof(struct nla_policy) * policies_len);
+    for (int i = 0; i < policies_len; i++) {
+	    nl->policies[i] = policies[i];
+    }
 
     nl_connect(nl->sock, nl->protocol);
 
@@ -87,9 +90,13 @@ void modify_cb(struct netlink *nl, enum nl_cb_type type, enum nl_cb_kind kind, v
  */
 void parse_attr_nl(struct netlink *nl, struct nl_msg *msg, struct nlattr **attrs) {
     struct nlmsghdr *nlh = nlmsg_hdr(msg);
-     
-    if (nlmsg_parse(nlh, nl->hdrlen, attrs, nl->policies_len, nl->policies) < 0) {
-        printf("Error parsing message\n");
+    int ret;
+
+    struct nlattr* nla = nlmsg_attrdata(nlh, 4);
+   
+    if ((ret = nlmsg_parse(nlh, nl->hdrlen, attrs, nl->policies_len, nl->policies)) < 0) {
+        printf("Error parsing message %s\n", nl_geterror(ret));
+
     }
 }
 

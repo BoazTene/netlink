@@ -19,7 +19,7 @@ enum {
  */
 
 static struct nla_policy family1_genl_policy[FAMILY1_A_MAX + 1] = {
-    [FAMILY1_A_MSG] = { .type = NLA_STRING, .len=100},
+    [FAMILY1_A_MSG] = { .type = NLA_STRING, .len=300},
 };
 
 /**
@@ -153,6 +153,7 @@ failure:
 static void __exit gnKernel_exit(void) {
     int ret;
     printk("Generic Netlink Example Module unloaded.\n");
+    printk("meow %d\n", NLA_STRING);
     //Unregister the family
     
     ret = genl_unregister_family(&family1_gnl_family);

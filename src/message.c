@@ -171,7 +171,7 @@ static PyMethodDef Message_methods[] = {
     {"append", (PyCFunction) message_append, METH_VARARGS, append_docs},
     {"nla_put", (PyCFunction) message_nla_put, METH_VARARGS, nla_put_docs},
     {"get_bytes", (PyCFunction) message_get_bytes, METH_VARARGS, get_bytes_docs}, 
-    {"message_parse_header", (PyCFunction) message_parse_header, METH_VARARGS, parse_header_docs},
+    {"parse_header", (PyCFunction) message_parse_header, METH_VARARGS, parse_header_docs},
     {"from_bytes", (PyCFunction) message_from_bytes, METH_VARARGS | METH_CLASS, from_bytes_docs},
     {NULL} /* Sentinel */
 };

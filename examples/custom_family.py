@@ -1,4 +1,4 @@
-from netlink import ArgumentPolicy, CB_Kind, CB_Type, Attribute, Message
+from netlink import AttributePolicy, CB_Kind, CB_Type, Attribute, Message
 
 from generic_netlink import GenericNetLink, GenericMessage
 
@@ -27,7 +27,7 @@ class CustomFamily(GenericNetLink):
     FAMILY_NAME = "FAMILY1"
     VERSION = 1
     POLICY = [
-            ArgumentPolicy(1, 0, 100) # policy for argument 0. type: 1 (string), min length: 0, max length: 100
+            AttributePolicy(1, 0, 300) # policy for attribute 0. type: 1 (string), min length: 0, max length: 100
     ]
 
     def __init__(self):

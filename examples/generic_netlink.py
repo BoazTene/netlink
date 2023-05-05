@@ -1,4 +1,4 @@
-from netlink import NetLink, Message, CB_Kind, CB_Type, ArgumentPolicy, Attribute
+from netlink import NetLink, Message, CB_Kind, CB_Type, AttributePolicy, Attribute
 import struct
 
 
@@ -41,7 +41,7 @@ class GenericMessage(Message):
         """
 
         length, family_id, flags, seq, pid = message.parse_header()
-        cmd, version, _ = GenericMessage.parse_header(message.get_bytes())
+        cmd, version, _ = GenericMessage.parse_genl_header(message.get_bytes())
         
         genl_message = GenericMessage(family_id, flags, cmd, version)
 
@@ -50,16 +50,33 @@ class GenericMessage(Message):
         return genl_message
         
     @staticmethod
-    def parse_header(bytes_data: bytes):
+    def parse_genl_header(data: bytes) -> tuple[int, int, int]:
+        """
+            Parses the generic message's header (both parent and generic header).
 
-        return struct.unpack("BBH", bytes_data[16:20])
+            Generic Netlink message:
+                16 bytes - is the netlink header, includes (length, type, flags, seq, pid).
+                4 bytes - is the generic netlink header, includes (cmd, version, reserved bytes/not used).
+                payload
+
+            @param data bytes message data.
+            @return a tuple that contains cmd, version, reserved bytes (you can ignore).
+
+        """
+
+        header = data[NetLink.HEADER_LEN:NetLink.HEADER_LEN + GenericNetLink.HEADER_LEN]
+        return struct.unpack("BBH", header)
 
 
 class GenericNetLink(NetLink):
+    """
+        Simple and base implementation of the generic netlink.
+    """
+
     HEADER_LEN = 4
     PROTOCOL = 16
 
-    def __init__(self, family_name: str, policies: list[ArgumentPolicy]):
+    def __init__(self, family_name: str, policies: list[AttributePolicy]):
         super().__init__(NetLink.resolve_genl_family_id(family_name), GenericNetLink.PROTOCOL, GenericNetLink.HEADER_LEN, policies)
 
     def parse_message(self, msg: Message) -> tuple[list[Attribute], int, int]:
@@ -72,8 +89,8 @@ class GenericNetLink(NetLink):
         """
 
         message = GenericMessage.from_message(msg)
-
-        attributes = self.parse_message_attributes(msg);
+        
+        attributes = self.parse_message_attributes(message)
         cmd, version = message.cmd, message.version
 
         return attributes, cmd, version 

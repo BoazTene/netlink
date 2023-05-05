@@ -1,1 +1,0 @@
-savedcmd_/home/boaz/netlink/examples/kernel_module/modules.order := {   echo /home/boaz/netlink/examples/kernel_module/netlink_example.o; :; } > /home/boaz/netlink/examples/kernel_module/modules.order
