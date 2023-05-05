@@ -4,6 +4,17 @@ A simple python module for the kernel netlink interface.
 
 
 ## Installtion
+The module depends on the libnl-3 library!
+
+#### Apt installition for libnl-3
+
+`
+apt install libnl-3-dev
+`
+
+#### Install libnl from source
+https://pkgs.alpinelinux.org/package/edge/main/x86/libnl3-dev
+
 
 ##### Installtion via pip
 `
@@ -25,20 +36,10 @@ python3 setup.py install
 ## Usage
 
 
-The usage is pretty straight forward.
+* Check out the examples directory.
 
-Connencting to a netlink:
-```
-from netlink import NetLink
-
-netlink = NetLink(31) // 31 is the magic number
-
-netlink.send(b"Hello Netlink!")
-result = netlink.recv(1024) // number of bytes
-
-print(result.decode('utf8')) // prints result from kernel.
-
-netlink.close() // closes the connection
-```
+* Read the docs.
 
 
+## Contributing
+You are more then welcome to contribute to the project.
