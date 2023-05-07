@@ -69,6 +69,30 @@ int resolve_genl_family_id(char* family_name) {
 }
 
 /**
+ * Resolves a group id from a family name and group name. 
+ * 
+ * !Note Only for generic netlink ofcourse.
+ *
+ * @param family_name The family name to resolve.
+ * @param group_name The group_name to resolve.
+ * @returns the group id.
+ */
+int resolve_genl_group_id(char* family_name, char* group_name) {
+	int family_id;
+	struct nl_sock * sock = nl_socket_alloc();
+	if (!sock) return -1;
+
+	nl_connect(sock, NETLINK_GENERIC);
+	family_id = genl_ctrl_resolve_grp(sock, family_name, group_name);
+
+	nl_socket_free(sock);
+
+	return family_id;
+}
+
+
+
+/**
  * Modifies callbacks.
  * Note that these callbacks will get called when a message arrives.
  *
@@ -98,6 +122,15 @@ void parse_attr_nl(struct netlink *nl, struct nl_msg *msg, struct nlattr **attrs
         printf("Error parsing message %s\n", nl_geterror(ret));
 
     }
+}
+
+/**
+ * Disables the seq check for the socket.
+ *
+ * @param nl netlink object.
+ */
+void disable_seq_check(struct netlink *nl) {
+	nl_socket_disable_seq_check(nl->sock);
 }
 
 /**

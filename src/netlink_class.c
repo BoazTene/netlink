@@ -36,6 +36,21 @@ static PyObject *netlink_resolve_genl_family_id(PyObject *cls, PyObject *args) {
 	return PyLong_FromLong(family_id);
 }
 
+#define resolve_genl_group_id_docs "A static method that resolve the group id of an generic netlink multicast group.\n@param family_name The family name\n@param group_name The group name\n@return The group id"
+
+static PyObject *netlink_resolve_genl_group_id(PyObject *cls, PyObject *args) {
+	char *family_name;
+	char *group_name;
+	
+	if (!PyArg_ParseTuple(args, "ss", &family_name, &group_name) ) {
+		return NULL;
+	}
+
+	int group_id = resolve_genl_group_id(family_name, group_name);
+
+	return PyLong_FromLong(group_id);
+}
+
 #define send_docs "Sends a message.\n@param message The message to send"
 
 static PyObject *netlink_send(NetLink *self, PyObject *args) {
@@ -83,6 +98,14 @@ static PyObject *netlink_parse(NetLink *self, PyObject *args) {
 
 static PyObject *netlink_get_family_id(NetLink *self, PyObject *args) {
 	return PyLong_FromLong(self->netlink->family_id);
+}
+
+#define disable_seq_check_docs "Disables the sequential check."
+
+static PyObject *netlink_disable_seq(NetLink *self, PyObject *args) {
+	disable_seq_check(self->netlink);
+
+	Py_RETURN_NONE;
 }
 
 /**
@@ -266,11 +289,13 @@ static PyMethodDef NetLink_methods[] = {
     {"send", (PyCFunction) netlink_send, METH_VARARGS, send_docs},
     {"recv", (PyCFunction) netlink_recv, METH_VARARGS, recv_docs},
     {"get_family_id", (PyCFunction)netlink_get_family_id, METH_VARARGS, get_family_id_docs},
+    {"disable_seq_check", (PyCFunction)netlink_disable_seq, METH_VARARGS, disable_seq_check_docs},
     {"close", (PyCFunction) netlink_close, METH_VARARGS,
      close_docs},
     {"modify_cb", (PyCFunction) netlink_modify_cb, METH_VARARGS, modify_cb_docs},
     {"parse_message_attributes", (PyCFunction) netlink_parse, METH_VARARGS, parse_docs},
     {"resolve_genl_family_id", (PyCFunction) netlink_resolve_genl_family_id, METH_VARARGS | METH_CLASS, resolve_genl_family_id_docs},
+    {"resolve_genl_group_id", (PyCFunction) netlink_resolve_genl_group_id, METH_VARARGS | METH_CLASS, resolve_genl_group_id_docs},
     {"add_membership", (PyCFunction) netlink_add_membership, METH_VARARGS, add_membership_docs},
     {"drop_membership", (PyCFunction) netlink_drop_membership, METH_VARARGS, drop_membership_docs},
     {NULL} /* Sentinel */

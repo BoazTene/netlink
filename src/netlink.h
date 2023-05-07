@@ -77,6 +77,18 @@ struct netlink * initialize_netlink(struct netlink *nl, int protocol, int family
  */
 int resolve_genl_family_id(char* family_name);
 
+
+/**
+ * Resolves a group id from a family name and group name. 
+ * 
+ * !Note Only for generic netlink ofcourse.
+ *
+ * @param family_name The family name to resolve.
+ * @param group_name The group_name to resolve.
+ * @returns the group id.
+ */
+int resolve_genl_group_id(char* family_name, char* group_name);
+
 /**
  * Sends a nl message.
  *
@@ -131,6 +143,13 @@ int add_membership_nl(struct netlink *nl, int group);
  * @return return code, zero upon success.
  */
 int drop_membership_nl(struct netlink *nl, int group);
+
+/**
+ * Disables the seq check for the socket.
+ *
+ * @param nl netlink object.
+ */
+void disable_seq_check(struct netlink *nl);
 
 /**
  * Closes netlink connection and frees the socket.

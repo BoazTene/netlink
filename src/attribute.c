@@ -18,6 +18,10 @@
 
 #include "attribute.h"
 
+static PyObject *get_data_bytes(Attribute *self, PyObject * args) {
+	return PyBytes_FromStringAndSize(self->data, self->len);
+}
+
 static PyObject *Attribute_new(PyTypeObject *type, PyObject *args,
                              PyObject *kwds) {
     Attribute *self;
@@ -58,6 +62,7 @@ static PyMemberDef Attribute_members[] = {
 };
 
 static PyMethodDef Attribute_methods[] = {
+	{"get_data_bytes",  (PyCFunction) get_data_bytes, METH_VARARGS, ""},
        {NULL} /* Sentinel */
 };
 
