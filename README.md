@@ -15,13 +15,7 @@ apt install libnl-3-dev
 #### Install libnl from source
 https://pkgs.alpinelinux.org/package/edge/main/x86/libnl3-dev
 
-
-##### Installtion via pip
-`
-pip install netlink-client
-`
-
-#### Installtion from source
+#### Installtion
 To install from source:
 
 ```
