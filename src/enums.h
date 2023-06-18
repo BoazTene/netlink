@@ -78,6 +78,16 @@ void initialize_enums() {
 	PyDict_SetItemString(CBKindType.tp_dict, "CB_VERBOSE", PyLong_FromLong(NL_CB_VERBOSE));
 	PyDict_SetItemString(CBKindType.tp_dict, "CB_DEBUG", PyLong_FromLong(NL_CB_DEBUG));
 	PyDict_SetItemString(CBKindType.tp_dict, "CB_CUSTOM", PyLong_FromLong(NL_CB_CUSTOM));
+
+	PyDict_SetItemString(AttributeType.tp_dict, "UNSPEC", PyLong_FromLong(NLA_UNSPEC));
+	PyDict_SetItemString(AttributeType.tp_dict, "U8", PyLong_FromLong(NLA_U8));
+	PyDict_SetItemString(AttributeType.tp_dict, "U16", PyLong_FromLong(NLA_U16));
+	PyDict_SetItemString(AttributeType.tp_dict, "U32", PyLong_FromLong(NLA_U32));
+	PyDict_SetItemString(AttributeType.tp_dict, "U64", PyLong_FromLong(NLA_U64));
+	PyDict_SetItemString(AttributeType.tp_dict, "STRING", PyLong_FromLong(NLA_STRING));
+	PyDict_SetItemString(AttributeType.tp_dict, "FLAG", PyLong_FromLong(NLA_FLAG));
+	PyDict_SetItemString(AttributeType.tp_dict, "MSECS", PyLong_FromLong(NLA_MSECS));
+	PyDict_SetItemString(AttributeType.tp_dict, "NESTED", PyLong_FromLong(NLA_NESTED));
 }
 
 #endif

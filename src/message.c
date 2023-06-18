@@ -65,6 +65,34 @@ static PyObject * message_append(Message *self, PyObject *args) {
     Py_RETURN_NONE; 
 }
 
+static PyObject * message_nla_nested_start(Message *self, PyObject *args)
+{
+	int argtype;
+	if (!PyArg_ParseTuple(args, "i", &argtype)) {
+		return NULL;
+	}
+
+	struct nlattr *start = nla_nest_start(self->msg, argtype);
+
+	return PyLong_FromVoidPtr(start);
+}
+
+static PyObject * message_nla_nested_end(Message *self, PyObject *args)
+{
+	PyLongObject * nlattr_start;
+
+	if (!PyArg_ParseTuple(args, "O", &nlattr_start)) {
+		 printf("meow meow\n");
+		return NULL;		
+	}
+
+	struct nlattr* start = (struct nlattr*) PyLong_AsVoidPtr(nlattr_start);
+
+	nla_nest_end(self->msg, start);
+
+	Py_RETURN_NONE;
+}
+
 #define nla_put_docs "Add a unspecific attribute to netlink message.\n@param attribute_type Attribute type.\n@param data Pointer to data to be used as attribute payload."
 
 static PyObject * message_nla_put(Message *self, PyObject *args) {
@@ -172,6 +200,8 @@ static PyMethodDef Message_methods[] = {
     {"nla_put", (PyCFunction) message_nla_put, METH_VARARGS, nla_put_docs},
     {"get_bytes", (PyCFunction) message_get_bytes, METH_VARARGS, get_bytes_docs}, 
     {"parse_header", (PyCFunction) message_parse_header, METH_VARARGS, parse_header_docs},
+    {"nla_nest_start", (PyCFunction) message_nla_nested_start, METH_VARARGS, parse_header_docs},
+    {"nla_nest_end", (PyCFunction) message_nla_nested_end, METH_VARARGS, parse_header_docs},
     {"from_bytes", (PyCFunction) message_from_bytes, METH_VARARGS | METH_CLASS, from_bytes_docs},
     {NULL} /* Sentinel */
 };

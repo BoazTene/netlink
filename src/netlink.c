@@ -44,6 +44,8 @@ struct netlink *initialize_netlink(struct netlink *nl, int protocol, int family_
 
     nl_connect(nl->sock, nl->protocol);
 
+    nl_socket_set_nonblocking(nl->sock);
+
     return nl;
 }
 
@@ -116,8 +118,7 @@ void parse_attr_nl(struct netlink *nl, struct nl_msg *msg, struct nlattr **attrs
     struct nlmsghdr *nlh = nlmsg_hdr(msg);
     int ret;
 
-    struct nlattr* nla = nlmsg_attrdata(nlh, 4);
-   
+  
     if ((ret = nlmsg_parse(nlh, nl->hdrlen, attrs, nl->policies_len, nl->policies)) < 0) {
         printf("Error parsing message %s\n", nl_geterror(ret));
 
@@ -181,7 +182,7 @@ int recv_nl(struct netlink *nl)
 {
     int ret = nl_recvmsgs_default(nl->sock);
 
-    if (ret < 0) {
+    if (ret < 0 && ret != -4) {
 	        printf("Failed to receive netlink message: %s\n", nl_geterror(ret));
         	fprintf(stderr, "Error: Failed to receive netlink message %d\n", ret);
         return -1;

@@ -75,7 +75,7 @@ static PyObject *netlink_parse(NetLink *self, PyObject *args) {
     }
     
     struct nlattr* attrs[self->netlink->policies_len+1];
-
+    
     parse_attr_nl(self->netlink, message->msg, attrs);
     
     PyObject * attribute_list = PyList_New(0);
@@ -85,10 +85,13 @@ static PyObject *netlink_parse(NetLink *self, PyObject *args) {
 				     
 	    Attribute *attribute = PyObject_New(Attribute, &AttributeType);
 	    attribute->len = nla_len(attrs[i]);
-	    attribute->data = nla_data(attrs[i]);
+	    attribute->data = (unsigned char*) malloc(attribute->len - 4);
+	    memcpy(attribute->data, nla_data(attrs[i]), attribute->len -4);
 	    attribute->type = nla_type(attrs[i]);
 
-            PyList_Append(attribute_list, (PyObject *) attribute);
+	    PyObject *value = Py_BuildValue("O", attribute);
+
+            PyList_Append(attribute_list, (PyObject *) value);
     }
 
     return attribute_list;
@@ -188,7 +191,7 @@ static PyObject *netlink_drop_membership(NetLink *self, PyObject *args) {
 static PyObject *netlink_recv(NetLink *self, PyObject *args) {
     int ret = recv_nl(self->netlink);
 
-    if (ret != 0) {
+    if (ret != 0 && ret != -4) {
 	    return NULL;
     }
 
